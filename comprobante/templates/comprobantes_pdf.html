@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Ticket</title>
+
+<style>
+    body {
+        font-family: Courier, monospace;
+        font-size: 11px;
+        width: 250px;
+        margin: auto;
+        color: #000;
+    }
+
+    .ticket {
+        border: 1px dashed #000;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    .divider {
+        border-top: 1px dashed #000;
+        margin: 8px 0;
+    }
+
+    .right {
+        text-align: right;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+</style>
+</head>
+
+<body>
+
+{% for c in comprobantes %}
+<div class="ticket">
+
+    <!-- ENCABEZADO -->
+    <div class="center bold">
+        RAGNAROCK BARBER
+    </div>
+
+    <div class="center">
+        NIT: 900123456-1<br>
+        Calle 123 #45-67<br>
+        Bogotá<br>
+        Tel: 300 000 0000
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- INFO -->
+    <p><strong>Ticket:</strong> {{ c.id }}</p>
+    <p><strong>Fecha:</strong> {{ c.fecha|date:"d/m/Y H:i" }}</p>
+
+    <div class="divider"></div>
+
+    <!-- CLIENTE -->
+    <p><strong>Cliente:</strong><br>
+    {{ c.venta.cita.cliente.nombre }} {{ c.venta.cita.cliente.apellido }}</p>
+
+    <p><strong>Barbero:</strong><br>
+    {{ c.venta.cita.barbero.nombre }} {{ c.venta.cita.barbero.apellido }}</p>
+
+    <div class="divider"></div>
+
+    <!-- SERVICIO -->
+    <p><strong>Servicio:</strong><br>
+    {{ c.venta.cita.servicio.nombre }}</p>
+
+    <div class="divider"></div>
+
+    <!-- PAGO -->
+    <p><strong>Método:</strong> {{ c.tipo_pago.metodo }}</p>
+
+    <div class="divider"></div>
+
+    <!-- TOTAL -->
+    <p class="right bold">
+        TOTAL: $ {{ c.monto }}
+    </p>
+
+    <div class="divider"></div>
+
+    <div class="center">
+        ¡Gracias por su visita!<br>
+        Vuelva pronto ✂️
+    </div>
+
+</div>
+{% endfor %}
+
+</body>
+</html>

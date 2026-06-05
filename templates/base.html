@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ragnarok Barber</title>
+
+    <link rel="stylesheet" href="/assets/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/assets/DataTables/datatables.min.css">
+    <link rel="stylesheet" href="/css/custom.css">
+
+    <link rel="shortcut icon" href="/img/logo.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'vendor/fonts/iconify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/css/core.css' %}">
+    <link rel="stylesheet" href="{% static 'css/demo.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}">
+
+    <script src="{% static 'vendor/js/helpers.js' %}"></script>
+    <script src="{% static 'js/config.js' %}"></script>
+
+    <style>
+        /* =========================
+           LAYOUT DESKTOP
+        ========================= */
+        .layout-page {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            transition: all 0.3s ease;
+        }
+
+        #layout-menu {
+            width: 260px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+        @media (max-width: 991px) {
+
+            #layout-menu {
+                transform: translateX(-100%);
+            }
+
+            #layout-menu.active {
+                transform: translateX(0);
+            }
+
+            .layout-page {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+
+        /* =========================
+           BOTÓN MÓVIL PRO
+        ========================= */
+        #menu-toggle {
+            display: none;
+        }
+
+        @media (max-width: 991px) {
+            #menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                position: fixed;
+                top: 18px;
+                left: 18px;
+                z-index: 2000;
+
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+
+                background: #d4af37;
+                color: #000;
+
+                border: none;
+                font-size: 22px;
+
+                box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+                cursor: pointer;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 🔘 BOTÓN SOLO MÓVIL -->
+<button id="menu-toggle">☰</button>
+
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+
+        <!-- SIDEBAR -->
+        {% include "includes/component/sidebar.html" %}
+
+        <!-- CONTENIDO -->
+        <div class="layout-page">
+            <div class="content-wrapper py-3">
+
+                <div class="container-fluid px-2 px-md-5">
+
+                    {% block content %}
+                    {% endblock %}
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- =========================
+     JS
+========================= -->
+<script src="{% static 'vendor/libs/jquery/jquery.js' %}"></script>
+<script src="{% static 'vendor/libs/popper/popper.js' %}"></script>
+<script src="{% static 'vendor/js/bootstrap.js' %}"></script>
+<script src="{% static 'vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+<script src="{% static 'vendor/js/menu.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.getElementById("menu-toggle");
+    const sidebar = document.getElementById("layout-menu");
+
+    toggleBtn.addEventListener("click", function () {
+        sidebar.classList.toggle("active");
+    });
+});
+</script>
+
+</body>
+</html>

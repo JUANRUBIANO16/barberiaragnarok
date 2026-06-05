@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<style>
+.dataTables_filter {
+    display: none;
+}
+</style>
+
+<script>
+$(document).ready(function(){
+
+    var table = $('.table').DataTable({
+        paging: true,
+        lengthChange: false,
+        searching: true,
+        ordering: true,
+        info: true,
+        pageLength: 5,
+        columnDefs: [
+            { orderable: false, targets: 6 }
+        ],
+        language: {
+            info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+            zeroRecords: "No se encontraron registros",
+            paginate: {
+                first: "Primero",
+                last: "Último",
+                next: "Siguiente",
+                previous: "Anterior"
+            }
+        }
+    });
+
+    $('#filter-id').on('keyup', function(){
+        table.column(0).search(this.value).draw();
+    });
+
+    $('#custom-length').on('change', function () {
+        table.page.len(this.value).draw();
+    });
+
+    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+        let max = parseFloat($('#filter-total').val()) || Infinity;
+        let total = parseFloat(data[4].replace('$','')) || 0;
+        return total <= max;
+    });
+
+    $('#filter-total').on('keyup change', function () {
+        table.draw();
+    });
+
+});
+</script>
+
+<div class="container-xl">
+
+{% if messages %}
+<div class="mt-3">
+    {% for message in messages %}
+        <div class="alert 
+            {% if message.tags == 'error' %}alert-danger
+            {% elif message.tags == 'success' %}alert-success
+            {% elif message.tags == 'warning' %}alert-warning
+            {% else %}alert-info
+            {% endif %}
+            alert-dismissible fade show">
+
+            {{ message }}
+
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="table-responsive">
+<div class="table-wrapper">
+
+<div class="table-title">
+    <div class="row">
+        <div class="col-sm-4">
+            <h2>Ventas <b>Registradas</b></h2>
+        </div>
+        <div class="col-sm-8">						
+            <a href="#addModal" class="btn btn-primary" data-toggle="modal">
+                <i class="material-icons">&#xE863;</i>
+                <span>Agregar Venta</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="table-filter mb-2">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="show-entries">
+                <span>Mostrar</span>
+                <select id="custom-length" class="form-control">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                <span>entradas</span>
+            </div>
+        </div>
+
+        <div class="col-sm-9 d-flex align-items-center">
+            <div class="filter-group mr-2">
+                <label>ID Venta</label>
+                <input type="text" id="filter-id" class="form-control">
+            </div>
+
+            <div class="filter-group mr-2">
+                <label>Total máximo</label>
+                <input type="number" id="filter-total" class="form-control">
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-striped table-hover">
+<thead>
+<tr>
+    <th>ID</th>
+    <th>Cita</th>
+    <th>Subtotal</th>
+    <th>Descuento</th>
+    <th>Total</th>
+    <th>Fecha</th>
+    <th>Acciones</th>
+</tr>
+</thead>
+
+<tbody>
+{% for v in ventas %}
+<tr>
+    <td>{{ v.id }}</td>
+    <td>
+        Cita #{{ v.cita.id }} -
+        {{ v.cita.cliente.nombre }}
+        con {{ v.cita.barbero.nombre }}
+        ({{ v.cita.servicio.nombre }})
+    </td>
+    <td>${{ v.subtotal }}</td>
+    <td>${{ v.descuento }}</td>
+    <td><strong>${{ v.total }}</strong></td>
+    <td>{{ v.fecha }}</td>
+    <td>
+        <a href="#editModal{{ v.id }}" data-toggle="modal">
+            <i class="material-icons">&#xE254;</i>
+        </a>
+        <a href="#deleteModal{{ v.id }}" data-toggle="modal">
+            <i class="material-icons">&#xE872;</i>
+        </a>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+<!-- ADD -->
+<div id="addModal" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST" action="{% url 'crear_ventas' %}">
+{% csrf_token %}
+
+<div class="modal-header">
+    <h4>Agregar Venta</h4>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
+
+<div class="modal-body">
+
+    <div class="form-group">
+        <label>Cita</label>
+        <select name="cita" id="citaSelect" class="form-control">
+            {% for c in citas %}
+                <option value="{{ c.id }}" data-precio="{{ c.servicio.precio }}">
+                    Cita #{{ c.id }} - {{ c.cliente.nombre }} ({{ c.servicio.nombre }})
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Subtotal</label>
+        <input type="text" id="subtotalPreview" class="form-control" readonly>
+    </div>
+
+    <div class="form-group">
+        <label>Descuento</label>
+        <input type="text" id="descuentoPreview" class="form-control" readonly>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-success">Guardar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+
+<!-- EDIT -->
+{% for v in ventas %}
+<div id="editModal{{ v.id }}" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST" action="{% url 'editar_ventas' v.id %}">
+{% csrf_token %}
+
+<div class="modal-header">
+    <h4>Editar Venta</h4>
+</div>
+
+<div class="modal-body">
+
+    <div class="form-group">
+        <label>Cita</label>
+        <select name="cita" class="form-control">
+            {% for c in citas %}
+                <option value="{{ c.id }}" data-precio="{{ c.servicio.precio }}"
+                    {% if c.id == v.cita.id %}selected{% endif %}>
+                    Cita #{{ c.id }} - {{ c.cliente.nombre }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Subtotal</label>
+        <input type="text" class="form-control" value="{{ v.subtotal }}" readonly>
+    </div>
+
+    <div class="form-group">
+        <label>Descuento</label>
+        <input type="text" class="form-control" value="{{ v.descuento }}" readonly>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-info">Guardar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+{% endfor %}
+
+<!-- DELETE -->
+{% for v in ventas %}
+<div id="deleteModal{{ v.id }}" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST" action="{% url 'eliminar_ventas' v.id %}">
+{% csrf_token %}
+
+<div class="modal-header">
+    <h4>Eliminar Venta</h4>
+</div>
+
+<div class="modal-body">
+    ¿Seguro que deseas eliminar esta venta?
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+{% endfor %}
+
+<!-- SCRIPT -->
+<script>
+function calcularDescuento(subtotal){
+    if(subtotal >= 150000) return subtotal * 0.15;
+    if(subtotal >= 100000) return subtotal * 0.10;
+    if(subtotal >= 50000) return subtotal * 0.05;
+    return 0;
+}
+
+function actualizarPreview(){
+    let select = document.getElementById("citaSelect");
+    let precio = parseFloat(select.options[select.selectedIndex].dataset.precio) || 0;
+    let descuento = calcularDescuento(precio);
+
+    document.getElementById("subtotalPreview").value = precio;
+    document.getElementById("descuentoPreview").value = descuento;
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+    let select = document.getElementById("citaSelect");
+
+    if(select){
+        select.addEventListener("change", actualizarPreview);
+        actualizarPreview();
+    }
+});
+</script>
+
+{% endblock %}

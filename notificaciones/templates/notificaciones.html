@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(document).ready(function () {
+
+    let table = $('.table').DataTable({
+        paging: true,
+        lengthChange: false,
+        searching: true,
+        ordering: true,
+        info: true,
+        pageLength: 5
+    });
+
+    $('#filter-nombre').on('keyup', function () {
+        table.column(1).search(this.value).draw();
+    });
+
+    $('#custom-length').on('change', function () {
+        table.page.len(this.value).draw();
+    });
+
+    function formato12h(hora24){
+        let [h, m] = hora24.split(":");
+        h = parseInt(h);
+        let sufijo = h >= 12 ? "PM" : "AM";
+        h = h % 12;
+        h = h ? h : 12;
+        return `${h}:${m} ${sufijo}`;
+    }
+
+    function cargarHoras(modal){
+        let barbero = modal.find('.barbero').val();
+        let fecha = modal.find('.fecha').val();
+
+        if(barbero && fecha){
+            fetch(`/citas/obtener-horas/?barbero=${barbero}&fecha=${fecha}`)
+            .then(res => res.json())
+            .then(data => {
+
+                let select = modal.find('.hora');
+                select.html('');
+
+                if(data.horas.length > 0){
+                    data.horas.sort().forEach(h => {
+                        select.append(`<option value="${h}">${formato12h(h)}</option>`);
+                    });
+                } else {
+                    select.append(`<option value="">Sin disponibilidad</option>`);
+                }
+            });
+        }
+    }
+
+    $(document).on('change', '.barbero, .fecha', function(){
+        let modal = $(this).closest('.modal');
+        cargarHoras(modal);
+    });
+
+});
+</script>
+
+<div class="container-xl">
+
+{% if messages %}
+<div class="mt-3">
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+{{ message }}
+<button type="button" class="close" data-dismiss="alert">&times;</button>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+<div class="table-responsive">
+<div class="table-wrapper">
+
+<div class="table-title">
+<div class="row">
+<div class="col-sm-6">
+<h2>Notificaciones <b>de Citas</b></h2>
+</div>
+</div>
+</div>
+
+<div class="table-filter mb-2">
+<div class="row">
+<div class="col-sm-3">
+<div class="show-entries">
+<span>Mostrar</span>
+<select id="custom-length" class="form-control">
+<option value="5">5</option>
+<option value="10">10</option>
+<option value="15">15</option>
+<option value="20">20</option>
+</select>
+<span>entradas</span>
+</div>
+</div>
+
+<div class="col-sm-9 d-flex align-items-center">
+<div class="filter-group mr-2">
+<label>Nombre</label>
+<input type="text" id="filter-nombre" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<table class="table table-striped table-hover">
+<thead>
+<tr>
+<th>ID</th>
+<th>Nombre</th>
+<th>Teléfono</th>
+<th>Email</th>
+<th>Servicio</th>
+<th>Estado</th>
+<th>Acciones</th>
+</tr>
+</thead>
+
+<tbody>
+{% for n in notificaciones %}
+<tr>
+<td>{{ n.id }}</td>
+<td>{{ n.nombre }}</td>
+<td>{{ n.telefono }}</td>
+<td>{{ n.email }}</td>
+
+<td>
+{% if n.servicio %}
+{{ n.servicio.nombre }}
+{% else %}
+Sin servicio
+{% endif %}
+</td>
+
+<td>
+{% if n.estado == "pendiente" %}
+<span class="badge badge-warning">Pendiente</span>
+{% elif n.estado == "aceptada" %}
+<span class="badge badge-success">Aceptada</span>
+{% else %}
+<span class="badge badge-danger">Cancelada</span>
+{% endif %}
+</td>
+
+<td>
+
+{% if n.estado == "pendiente" %}
+<a href="#aceptarModal{{ n.id }}" data-toggle="modal">
+<i class="material-icons text-success">check_circle</i>
+</a>
+
+<a href="{% url 'cancelar_cita' n.id %}">
+<i class="material-icons text-danger">cancel</i>
+</a>
+{% endif %}
+
+<a href="#deleteModal{{ n.id }}" data-toggle="modal">
+<i class="material-icons">&#xE872;</i>
+</a>
+
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+<!-- MODAL ACEPTAR -->
+{% for n in notificaciones %}
+<div id="aceptarModal{{ n.id }}" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST" action="{% url 'aceptar_cita' n.id %}">
+{% csrf_token %}
+
+<div class="modal-header">
+<h4>Aceptar Cita</h4>
+<button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
+
+<div class="modal-body">
+
+<div class="form-group">
+<label>Fecha</label>
+<input type="date" name="fecha" class="form-control fecha" required>
+</div>
+
+<div class="form-group">
+<label>Barbero</label>
+<select name="barbero" class="form-control barbero" required>
+<option value="">Seleccione</option>
+{% for b in barberos %}
+<option value="{{ b.id }}">{{ b.nombre }}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="form-group">
+<label>Hora</label>
+<select name="hora" class="form-control hora" required>
+<option value="">Seleccione</option>
+</select>
+</div>
+
+<!-- 🔥 ESTE ERA EL PROBLEMA -->
+<div class="form-group">
+<label>Servicio</label>
+<select name="servicio" class="form-control" required>
+<option value="">Seleccione servicio</option>
+{% for s in servicios %}
+<option value="{{ s.id }}">{{ s.nombre }}</option>
+{% endfor %}
+</select>
+</div>
+
+</div>
+
+<div class="modal-footer">
+<button class="btn btn-success">Confirmar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+{% endfor %}
+
+<!-- MODAL DELETE -->
+{% for n in notificaciones %}
+<div id="deleteModal{{ n.id }}" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST" action="{% url 'eliminar_notificacion' n.id %}">
+{% csrf_token %}
+
+<div class="modal-header">
+<h4>Eliminar</h4>
+<button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
+
+<div class="modal-body">
+<p>¿Eliminar esta notificación?</p>
+</div>
+
+<div class="modal-footer">
+<button class="btn btn-danger">Eliminar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+{% endfor %}
+
+{% endblock %}

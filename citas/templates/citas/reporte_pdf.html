@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial; }
+
+        h2 { text-align: center; }
+
+        .resumen {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .resumen p {
+            margin: 3px 0;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Reporte de Citas</h2>
+
+<!-- 🔥 RESUMEN -->
+<div class="resumen">
+    <p><b>Total de citas:</b> {{ total_citas }}</p>
+    <p><b>Ingresos totales:</b> ${{ total_ingresos }}</p>
+</div>
+
+<!-- 🔥 TABLA -->
+<table>
+<thead>
+<tr>
+<th>Cliente</th>
+<th>Barbero</th>
+<th>Servicio</th>
+<th>Fecha</th>
+<th>Hora</th>
+<th>Estado</th>
+<th>Precio</th>
+</tr>
+</thead>
+
+<tbody>
+{% for cita in citas %}
+<tr>
+<td>{{ cita.cliente.nombre }}</td>
+<td>{{ cita.barbero.nombre }}</td>
+<td>{{ cita.servicio.nombre }}</td>
+<td>{{ cita.fecha }}</td>
+<td>{{ cita.hora }}</td>
+<td>{{ cita.estado }}</td>
+<td>${{ cita.servicio.precio }}</td>
+</tr>
+{% empty %}
+<tr>
+<td colspan="7">No hay resultados</td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+</body>
+</html>

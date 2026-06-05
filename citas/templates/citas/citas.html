@@ -1,0 +1,432 @@
+{% extends 'base.html' %} 
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<style>
+.dataTables_filter { display: none; }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(document).ready(function(){
+
+    let table = $('.table').DataTable({
+        paging: true,
+        lengthChange: false,
+        searching: true,
+        ordering: true,
+        info: true,
+        pageLength: 5,
+        columnDefs: [{ orderable: false, targets: 7 }]
+    });
+
+    // FILTROS
+    $('#cliente_filter').on('keyup', function(){
+        table.column(5).search(this.value).draw();
+    });
+
+    $('#barbero_filter').on('keyup', function(){
+        table.column(4).search(this.value).draw();
+    });
+
+    $('#estado_filter').on('change', function(){
+        table.column(3).search(this.value).draw();
+    });
+
+    $('#fecha_filter').on('change', function(){
+    let fecha = this.value; // yyyy-mm-dd
+
+    if(fecha){
+        let partes = fecha.split('-');
+        let formato = partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
+
+        table.column(1).search(formato).draw();
+    } else {
+        table.column(1).search('').draw();
+    }
+});
+    $('#entries').on('change', function(){
+        table.page.len($(this).val()).draw();
+    });
+
+    // FORMATO 12H
+    function formato12h(hora24){
+        let [h, m] = hora24.split(":");
+        h = parseInt(h);
+        let sufijo = h >= 12 ? "PM" : "AM";
+        h = h % 12;
+        h = h ? h : 12;
+        return `${h}:${m} ${sufijo}`;
+    }
+
+    // CARGAR HORAS
+    function cargarHoras(){
+        let barbero = $('#barbero').val();
+        let fecha = $('#fecha').val();
+
+        if(barbero && fecha){
+            fetch(`/citas/obtener-horas/?barbero=${barbero}&fecha=${fecha}`)
+            .then(res => res.json())
+            .then(data => {
+                let select = $('#hora');
+                select.html('');
+
+                if(data.horas.length > 0){
+                    data.horas.sort().forEach(h => {
+                        select.append(`<option value="${h}">${formato12h(h)}</option>`);
+                    });
+                } else {
+                    select.append(`<option value="">Sin disponibilidad</option>`);
+                }
+            });
+        }
+    }
+
+    $(document).on('change', '#barbero', cargarHoras);
+    $(document).on('change', '#fecha', cargarHoras);
+
+});
+</script>
+
+<div class="container-xl">
+
+ {% if messages %}
+    <div class="mt-3">
+        {% for message in messages %}
+            <div class="alert 
+                {% if message.tags == 'error' %}alert-danger
+                {% elif message.tags == 'success' %}alert-success
+                {% elif message.tags == 'warning' %}alert-warning
+                {% else %}alert-info
+                {% endif %}
+                alert-dismissible fade show" role="alert">
+
+                {{ message }}
+
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+<div class="table-responsive">
+<div class="table-wrapper">
+
+<div class="table-title">
+<div class="row">
+<div class="col-sm-4">
+<h2>Citas <b>Registradas</b></h2>
+</div>
+<div class="col-sm-8">						
+<a href="#addEmployeeModal" class="btn btn-primary" data-toggle="modal">
+<i class="material-icons">&#xE145;</i> <span>Agregar Cita</span>
+
+<a href="{% url 'reporte_citas' %}" class="btn btn-info">
+        <i class="material-icons">&#xE8B8;</i> <span>Ver Reportes</span>
+</a>
+</div>
+</div>
+</div>
+
+<!-- FILTROS -->
+<div class="table-filter mb-2">
+<div class="row">
+
+<div class="col-sm-3">
+    <div class="show-entries">
+        <span>Mostrar</span>
+        <select class="form-control" id="entries">
+            <option>5</option>
+            <option>10</option>
+            <option>15</option>
+            <option>20</option>
+        </select>
+        <span>entradas</span>
+    </div>
+</div>
+
+<div class="col-sm-9 d-flex align-items-center">
+
+    <div class="filter-group mr-2">
+        <label>Cliente</label>
+         <select id="estado_filter" class="form-control">
+            <option value="">Todos</option>
+            {% for cl in clientes %}
+            <option value="{{ cl.id }}">{{ cl.nombre }}</option>
+            {% endfor %}
+        </select>
+        
+    </div>
+
+    <div class="filter-group mr-2">
+        <label>Barbero</label>
+        <select id="estado_filter" class="form-control">
+            <option value="">Todos</option>
+            {% for b in barberos %}
+            <option value="{{ b.id }}">{{ b.nombre }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="filter-group mr-2">
+        <label>Estado</label>
+        <select id="estado_filter" class="form-control">
+            <option value="">Todos</option>
+            {% for value, label in estados %}
+            <option value="{{ label }}">{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    
+</div>
+
+</div>
+</div>
+
+<table class="table table-striped table-hover">
+<thead>
+<tr>
+<th>Id</th>
+<th>Fecha</th>
+<th>Hora</th>
+<th>Estado</th>
+<th>Barbero</th>
+<th>Cliente</th>
+<th>Servicio</th>
+<th>Acciones</th>
+</tr>
+</thead>
+
+<tbody>
+{% for c in citas %}
+<tr>
+<td>{{ c.id }}</td>
+<td>{{ c.fecha }}</td>
+<td>{{ c.hora }}</td>
+<td>{{ c.estado }}</td>
+<td>{{ c.barbero }}</td>
+<td>{{ c.cliente }}</td>
+<td>{{ c.servicio }}</td>
+<td>
+<a href="#editEmployeeModal{{ c.id }}" data-toggle="modal">
+<i class="material-icons">&#xE254;</i>
+</a>
+<a href="#deleteEmployeeModal{{ c.id }}" data-toggle="modal">
+<i class="material-icons">&#xE872;</i>
+</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+<!-- MODAL CREAR -->
+<div id="addEmployeeModal" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST" action="{% url 'crear_Cita' %}">
+{% csrf_token %}
+
+<div class="modal-header">
+<h4 class="modal-title">Añadir Cita</h4>
+<button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
+
+<div class="modal-body">
+
+<div class="form-group">
+<label>Fecha</label>
+<input type="date" id="fecha" name="fecha" class="form-control" required>
+</div>
+
+<div class="form-group">
+<label>Barbero</label>
+<select id="barbero" name="barbero" class="form-control" required>
+<option value="">Seleccione</option>
+{% for b in barberos %}
+<option value="{{ b.id }}">{{ b.nombre }}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="form-group">
+<label>Hora</label>
+<select id="hora" name="hora" class="form-control" required>
+<option value="">Seleccione barbero y fecha</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Estado</label>
+<select name="estado" class="form-control">
+{% for value, label in estados %}
+<option value="{{ value }}">{{ label }}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="form-group">
+<label>Cliente</label>
+<select name="cliente" class="form-control">
+{% for cl in clientes %}
+<option value="{{ cl.id }}">{{ cl.nombre }}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="form-group">
+<label>Servicio</label>
+<select name="servicio" class="form-control">
+{% for s in servicios %}
+<option value="{{ s.id }}">{{ s.nombre }}</option>
+{% endfor %}
+</select>
+</div>
+
+</div>
+
+<div class="modal-footer">
+<button class="btn btn-success">Guardar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+
+<!-- EDIT -->
+<!-- EDIT -->
+{% for c in citas %}
+<div id="editEmployeeModal{{ c.id }}" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST" action="{% url 'cita_edit' c.id %}">
+{% csrf_token %}
+
+<div class="modal-header">
+<h4 class="modal-title">Editar Cita</h4>
+<button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
+
+<div class="modal-body">
+
+<div class="form-group">
+<label>Fecha</label>
+<input type="date" name="fecha" value="{{ c.fecha|date:'Y-m-d' }}" class="form-control" required>
+</div>
+
+<div class="form-group">
+<label>Hora</label>
+<input type="time" name="hora" value="{{ c.hora }}" class="form-control" required>
+</div>
+
+<div class="form-group">
+<label>Barbero</label>
+<select name="barbero" class="form-control" required>
+{% for b in barberos %}
+<option value="{{ b.id }}" {% if b.id == c.barbero.id %}selected{% endif %}>
+{{ b.nombre }}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="form-group">
+<label>Cliente</label>
+<select name="cliente" class="form-control" required>
+{% for cl in clientes %}
+<option value="{{ cl.id }}" {% if cl.id == c.cliente.id %}selected{% endif %}>
+{{ cl.nombre }}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="form-group">
+<label>Servicio</label>
+<select name="servicio" class="form-control" required>
+{% for s in servicios %}
+<option value="{{ s.id }}" {% if s.id == c.servicio.id %}selected{% endif %}>
+{{ s.nombre }}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="form-group">
+<label>Estado</label>
+<select name="estado" class="form-control">
+{% for value, label in estados %}
+<option value="{{ value }}" {% if value == c.estado %}selected{% endif %}>
+{{ label }}
+</option>
+{% endfor %}
+</select>
+</div>
+
+</div>
+
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+<button type="submit" class="btn btn-info">Guardar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+{% endfor %}
+
+<!-- DELETE -->
+{% for c in citas %}
+<div id="deleteEmployeeModal{{ c.id }}" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST" action="{% url 'cita_delete' c.id %}">
+{% csrf_token %}
+
+<div class="modal-header">
+<h4>Eliminar</h4>
+<button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
+
+<div class="modal-body">
+<p>¿Eliminar esta cita?</p>
+</div>
+
+<div class="modal-footer">
+<button class="btn btn-danger">Eliminar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+{% endfor %}
+
+{% endblock %}

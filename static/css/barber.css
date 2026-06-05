@@ -1,0 +1,594 @@
+  html {
+            scroll-behavior: smooth;
+        }
+        body {
+            margin: 0;
+            font-family: 'Montserrat', Arial, sans-serif;
+            background: #181818;
+            color: #fff;
+            padding-top: 100px;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background: rgba(0,0,0,0.85);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            transition: transform 0.4s cubic-bezier(.77,0,.18,1), box-shadow 0.3s;
+        }
+        header.scrolled {
+            box-shadow: 0 2px 18px rgba(0,0,0,0.4);
+        }
+        .logo {
+            height: 60px;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 18px;
+            font-weight: 600;
+            transition: color 0.2s, border-bottom 0.3s;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 2px;
+        }
+        nav a.activo {
+            color: #e0b84c;
+            border-bottom: 2px solid #e0b84c;
+        }
+        nav a:hover {
+            color: #c59d5f;
+        }
+        .hero {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            height: 70vh;
+            background: url('imagenes/portada.jpg') center/cover no-repeat;
+            position: relative;
+
+        }
+        .hero::after {
+            content: "";
+            position: absolute;
+            top:0; left:0; right:0; bottom:0;
+            background: rgba(24,24,24,0.7);
+            z-index: 0;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: left;
+            margin-left: 4vw;
+            margin-top: 10vh;
+        }
+        .hero-content h1 {
+            font-family: 'Old Standard TT', 'Georgia', serif;
+            color: #c59d5f;
+            font-size: 4vw;
+            font-weight: bold;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            line-height: 1.1;
+            text-shadow: 2px 2px 8px #181818;
+        }
+        .decoracion-hero {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-top: 20px;
+        }
+        .decoracion-hero hr {
+            border: none;
+            border-top: 3px solid #c59d5f;
+            width: 80px;
+            margin: 0;
+            background: #c59d5f;
+            height: 0;
+        }
+        .sobre-nosotros {
+            background: url('imagenes/portada.jpg') center/cover no-repeat;
+            position: relative;
+            padding: 90px 0 90px 0;
+        }
+        .sobre-nosotros::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(24,24,24,0.85);
+            z-index: 0;
+        }
+        .sobre-contenido {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #fff;
+            text-align: left;
+            padding: 40px 30px;
+        }
+        .sobre-icono {
+            display: block;
+            margin: 0 auto 18px auto;
+            width: 70px;
+        }
+        .sobre-contenido h2 {
+            color: #c59d5f;
+            font-size: 2.7rem;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .decorativo {
+            border: none;
+            border-top: 3px solid #c59d5f;
+            width: 60px;
+            margin: 0 auto 22px auto;
+        }
+        .sobre-contenido p {
+            font-size: 1.18rem;
+            color: #ccc;
+            text-align: center;
+            margin-top: 18px;
+            line-height: 1.6;
+        }
+        .titulo-servicios {
+            width: 100%;
+            text-align: center;
+            color: #e0b84c;
+            font-family: 'Georgia', serif;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+.nuestros-servicios {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px 30px; /* 40px entre columnas, 30px entre filas */
+    background: #181818;
+    padding: 60px 20px 60px 20px; /* más espacio abajo para las filas de abajo */
+    flex-wrap: wrap;
+}
+
+.servicio-box {
+    background: #181818;
+    border: 1px solid #fff;
+    max-width: 350px;
+    min-width: 280px;
+    color: #fff;
+    text-align: left;
+    padding: 0 0 10px 0;
+    /* margin-bottom: 30px; <- ya no hace falta porque usamos gap en el contenedor */
+    position: relative;
+    font-family: 'Montserrat', Arial, sans-serif;
+}        .servicio-icono {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: -30px;
+            margin-bottom: 10px;
+        }
+        .servicio-box h3 {
+            color: #e0b84c;
+            font-family: 'Georgia', serif;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;
+            padding: 15px 0 10px 0;
+            border-bottom: 1px solid #fff;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .servicio-box h3 span {
+            font-family: 'Georgia', serif;
+            font-size: 1.2rem;
+        }
+        .servicio-descripcion {
+            padding: 18px 18px 18px 18px;
+            font-size: 1.05rem;
+            color: #ccc;
+            min-height: 140px;
+            border-bottom: 1px solid #fff;
+        }
+        .servicio-footer {
+            color: #e0b84c;
+            font-family: 'Georgia', serif;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: left;
+            padding: 12px 18px 0 18px;
+            text-transform: uppercase;
+        }
+        .servicios {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            padding: 60px 20px 40px 20px;
+            background: #222;
+        }
+        .servicio {
+            background: #181818;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+            padding: 30px 25px;
+            max-width: 320px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .servicio:hover {
+            transform: translateY(-8px) scale(1.03);
+        }
+        .servicio img {
+            width: 80px;
+            margin-bottom: 18px;
+        }
+        .servicio h3 {
+            color: #c59d5f;
+            margin-bottom: 12px;
+        }
+        .servicio p {
+            color: #ccc;
+            font-size: 1rem;
+        }
+        .testimonios {
+            background: #111;
+            padding: 70px 0 70px 0;
+        }
+        .titulo-testimonios {
+            text-align: center;
+            color: #e0b84c;
+            font-family: 'Georgia', serif;
+            font-size: 2.7rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .decoracion-testimonios {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 40px;
+        }
+        .decoracion-testimonios hr {
+            border: none;
+            border-top: 2px solid #e0b84c;
+            width: 200px;
+            margin: 0;
+            background: #e0b84c;
+            height: 0;
+        }
+        .decoracion-testimonios span {
+            color: #e0b84c;
+            font-size: 2rem;
+            font-family: 'Georgia', serif;
+        }
+        .contenedor-testimonios {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .servicio-imagen {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+        .testimonio-box {
+            background: #111;
+            border: 2px solid #e0b84c;
+            border-radius: 12px;
+            padding: 30px 28px 20px 28px;
+            max-width: 370px;
+            min-width: 280px;
+            color: #fff;
+            font-size: 1.08rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 340px;
+        }
+        .testimonio-usuario {
+            display: flex;
+            align-items: center;
+            margin-top: 25px;
+            gap: 15px;
+        }
+        .testimonio-usuario img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e0b84c;
+        }
+        .nombre-testimonio {
+            color: #e0b84c;
+            font-family: 'Georgia', serif;
+            font-size: 1.4rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .estrellas {
+            color: #e0b84c;
+            font-size: 1.3rem;
+            margin-top: 10px;
+            letter-spacing: 2px;
+        }
+        /* Apartado Agenda tu servicio */
+        .agenda-servicio {
+            position: relative;
+            min-height: 70vh;
+            background: url('imagenes/agenda-bg.jpg') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .agenda-servicio::after {
+            content: "";
+            position: absolute;
+            top:0; left:0; right:0; bottom:0;
+            background: rgba(24,24,24,0.7);
+            z-index: 0;
+        }
+        .agenda-contenido {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 80vw;
+            max-width: 1300px;
+            gap: 60px;
+            padding: 60px 0;
+        }
+        .agenda-info {
+            flex: 1;
+            color: #c59d5f;
+            font-family: 'Old Standard TT', 'Georgia', serif;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: left;
+        }
+        .agenda-info h2 {
+            font-size: 3vw;
+            margin-bottom: 18px;
+            font-family: 'Old Standard TT', 'Georgia', serif;
+            color: #c59d5f;
+            letter-spacing: 2px;
+        }
+        .agenda-info p {
+            font-size: 1.5rem;
+            color: #eaeaea;
+            font-family: 'Montserrat', Arial, sans-serif;
+            margin-bottom: 30px;
+        }
+        .decoracion-agenda {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-top: 20px;
+        }
+        .decoracion-agenda hr {
+            border: none;
+            border-top: 3px solid #c59d5f;
+            width: 80px;
+            margin: 0;
+            background: #c59d5f;
+            height: 0;
+        }
+        .agenda-formulario {
+            flex: 1.2;
+            background: rgba(24,24,24,0.5);
+            border: 3px solid #e0b84c;
+            border-radius: 25px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            min-width: 350px;
+            max-width: 500px;
+        }
+        .agenda-inputs {
+            display: flex;
+            gap: 12px;
+        }
+        .agenda-formulario input,
+        .agenda-formulario select {
+            width: 100%;
+            padding: 14px 12px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            background: #eaeaea;
+            color: #222;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        .agenda-label {
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        .agenda-formulario button {
+            background: #e0b84c;
+            color: #222;
+            font-family: 'Old Standard TT', 'Georgia', serif;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 38px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .agenda-formulario button:hover {
+            background: #c59d5f;
+            color: #fff;
+        }
+        /* Título ubicación mejorado */
+        .titulo-ubicacion {
+            text-align: center;
+            color: #e0b84c;
+            font-family: 'Old Standard TT', 'Georgia', serif;
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 0;
+            padding: 50px 0 10px 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .titulo-ubicacion span {
+            background: none;
+            color: #e0b84c;
+        }
+        /* Footer dorado animado */
+        .footer-vikings {
+            background: #000;
+            color: #e0b84c;
+            text-align: center;
+            padding: 60px 10px 30px 10px;
+            animation: fadeInFooter 1.2s ease;
+        }
+        @keyframes fadeInFooter {
+            from { opacity: 0; transform: translateY(40px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .footer-logo img {
+            margin-bottom: 18px;
+        }
+        .footer-logo h2 {
+            font-family: 'Old Standard TT', 'Georgia', serif;
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin: 0;
+            color: #e0b84c;
+            letter-spacing: 2px;
+        }
+        .footer-logo h2 span {
+            font-size: 1.2rem;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        .footer-stars {
+            font-size: 1.5rem;
+            margin: 10px 0 18px 0;
+            color: #e0b84c;
+        }
+        .footer-social {
+            margin: 18px 0 18px 0;
+        }
+        .footer-social a {
+            margin: 0 12px;
+            display: inline-block;
+            vertical-align: middle;
+            transition: transform 0.2s;
+        }
+        .footer-social a:hover {
+            transform: scale(1.2);
+        }
+        .footer-copy {
+            font-size: 1.6rem;
+            color: #e0b84c;
+            margin-top: 18px;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        @media (max-width: 1100px) {
+            .nuestros-servicios {
+                flex-direction: column;
+                align-items: center;
+            }
+            .servicio-box {
+                width: 95vw;
+                max-width: 400px;
+            }
+            .contenedor-testimonios {
+                flex-direction: column;
+                align-items: center;
+            }
+            .testimonio-box {
+                width: 95vw;
+                max-width: 400px;
+            }
+            .decoracion-testimonios hr {
+                width: 80px;
+            }
+            .decoracion-ubicacion hr {
+                width: 80px;
+            }
+        }
+        @media (max-width: 900px) {
+            .servicios {
+                flex-direction: column;
+                align-items: center;
+            }
+            .mapa-ubicacion iframe {
+                height: 300px;
+            }
+            .agenda-contenido {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+                width: 98vw;
+                padding: 30px 0;
+            }
+            .agenda-info h2 {
+                font-size: 2rem;
+            }
+            .agenda-formulario {
+                min-width: 220px;
+                max-width: 98vw;
+                padding: 20px 10px;
+            }
+        }
+        @media (max-width: 700px) {
+            header {
+                flex-direction: column;
+                padding: 15px 10px;
+            }
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            .servicio {
+                max-width: 95vw;
+            }
+            .sobre-contenido {
+                padding: 20px 10px;
+            }
+            .sobre-contenido h2 {
+                font-size: 1.5rem;
+            }
+        }
+             #btn {
+            background: #e0b84c;
+            color: #222;
+            font-family: 'Old Standard TT', 'Georgia', serif;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 38px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        #btn {
+            background: #c59d5f;
+            color: #fff;}

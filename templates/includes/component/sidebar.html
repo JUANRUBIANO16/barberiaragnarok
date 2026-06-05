@@ -1,0 +1,344 @@
+{% load static %}
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+
+<style>
+
+    body{
+    font-family: 'Poppins', sans-serif;
+}
+
+.app-brand-text{
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 3px;
+}
+
+.app-brand-subtitle{
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 4px;
+}
+
+#layout-menu {
+    background: linear-gradient(180deg, #050505, #111111, #000000);
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    border-right: 2px solid #d4af37;
+    box-shadow: 0 0 25px rgba(212,175,55,.15);
+}
+
+/* Scroll */
+#layout-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+#layout-menu::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 10px;
+}
+
+/* Header */
+.app-brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px 15px;
+    border-bottom: 1px solid rgba(212,175,55,.15);
+}
+
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-icon {
+    font-size: 38px;
+    color: #d4af37;
+    text-shadow: 0 0 15px rgba(212,175,55,.5);
+}
+
+.app-brand-text {
+    color: #d4af37 !important;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1;
+}
+
+.app-brand-subtitle {
+    color: #b8901f;
+    font-size: 11px;
+    letter-spacing: 3px;
+    margin-top: 4px;
+}
+
+/* Perfil */
+.profile-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px;
+    margin: 10px;
+    border-radius: 12px;
+    background: rgba(212,175,55,.05);
+    border: 1px solid rgba(212,175,55,.1);
+}
+
+.profile-box img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #d4af37;
+}
+
+.profile-info {
+    font-size: 14px;
+}
+
+.profile-info strong {
+    color: #fff;
+}
+
+.profile-info span {
+    display: block;
+    color: #d4af37;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+/* Menú */
+.menu-inner {
+    padding-top: 10px;
+}
+
+.menu-item {
+    margin: 4px 10px;
+}
+
+.menu-link {
+    color: #d8d8d8 !important;
+    padding: 13px 15px;
+    border-radius: 10px;
+    transition: all .3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+}
+
+.menu-link:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(212,175,55,.18),
+        rgba(212,175,55,.05)
+    );
+    color: #d4af37 !important;
+    transform: translateX(5px);
+}
+
+.menu-link:hover .menu-icon {
+    color: #d4af37;
+}
+
+/* Iconos */
+.menu-icon {
+    color: #b8901f;
+    font-size: 20px;
+    transition: .3s;
+}
+
+/* Activo */
+.menu-item.active .menu-link {
+    background: linear-gradient(
+        90deg,
+        rgba(212,175,55,.25),
+        rgba(212,175,55,.08)
+    );
+    border-left: 4px solid #d4af37;
+}
+
+.menu-item.active .menu-icon,
+.menu-item.active div {
+    color: #d4af37 !important;
+    font-weight: 700;
+}
+
+/* Salir */
+.logout {
+    color: #ff7373 !important;
+}
+
+.logout .menu-icon {
+    color: #ff7373;
+}
+
+.logout:hover {
+    background: rgba(255,0,0,.12);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #layout-menu {
+        width: 220px;
+    }
+
+    .app-brand-text {
+        font-size: 20px;
+    }
+
+    .brand-icon {
+        font-size: 30px;
+    }
+
+    .profile-box {
+        padding: 14px;
+    }
+
+    .profile-box img {
+        width: 42px;
+        height: 42px;
+    }
+
+    .menu-link {
+        padding: 11px 14px;
+        font-size: 14px;
+    }
+
+    .menu-icon {
+        font-size: 18px;
+    }
+}
+
+</style>
+
+<!-- Logo -->
+<div class="app-brand">
+    <div class="brand-container">
+        <i class=></i>
+
+        <div>
+            <div class="app-brand-text">RAGNAROK</div>
+            <div class="app-brand-subtitle">
+                BARBER SHOP
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Perfil -->
+<div class="profile-box">
+    {% if usuario.foto %}
+        <img src="{{ usuario.foto.url }}" alt="Foto de perfil">
+    {% else %}
+        <img src="{% static 'img/default-avatar.png' %}" alt="Foto por defecto">
+    {% endif %}
+    <div class="profile-info">
+        <strong>{{ usuario.nombre }} {{ usuario.apellido }}</strong>
+        <span>{{ usuario.tipo_usuario|capfirst }}</span>
+    </div>
+</div>
+
+<ul class="menu-inner py-2">
+
+<!-- Perfil -->
+<li class="menu-item">
+    <a href="{% url 'perfil' %}" class="menu-link">
+        <i class="menu-icon bx bx-user-circle"></i>
+        <div>Perfil</div>
+    </a>
+</li>
+
+<!-- Dashboard -->
+<li class="menu-item">
+    <a href="{% url 'dashboard' %}" class="menu-link">
+        <i class="menu-icon bx bx-grid-alt"></i>
+        <div>Dashboard</div>
+    </a>
+</li>
+
+{% if request.session.user_rol == 'admin' %}
+<!-- Usuarios -->
+<li class="menu-item">
+    <a href="{% url 'usuarios' %}" class="menu-link">
+        <i class="menu-icon bx bx-group"></i>
+        <div>Usuarios</div>
+    </a>
+</li>
+{% endif %}
+
+<!-- Citas -->
+<li class="menu-item">
+    <a href="{% url 'citas' %}" class="menu-link">
+        <i class="menu-icon bx bx-calendar-check"></i>
+        <div>Citas</div>
+    </a>
+</li>
+{% if request.session.user_rol == 'barbero' %}
+<!-- Disponibilidad -->
+<li class="menu-item">
+    <a href="{% url 'disponibilidad' %}" class="menu-link">
+        <i class="menu-icon bx bx-time"></i>
+        <div>Disponibilidad</div>
+    </a>
+</li>
+{% endif %}
+
+<!-- Servicios -->
+<li class="menu-item">
+    <a href="{% url 'listar_servicios' %}" class="menu-link">
+        <i class="menu-icon bx bx-briefcase-alt"></i>
+        <div>Servicios</div>
+    </a>
+</li>
+
+<!-- Ventas -->
+<li class="menu-item">
+    <a href="{% url 'ventas' %}" class="menu-link">
+        <i class="menu-icon bx bx-line-chart"></i>
+        <div>Ventas</div>
+    </a>
+</li>
+
+<!-- Comprobantes -->
+<li class="menu-item">
+    <a href="{% url 'comprobantes' %}" class="menu-link">
+        <i class="menu-icon bx bx-file"></i>
+        <div>Comprobantes</div>
+    </a>
+</li>
+
+<!-- Tipo de Pago -->
+<li class="menu-item">
+    <a href="{% url 'tipoPago' %}" class="menu-link">
+        <i class="menu-icon bx bx-credit-card"></i>
+        <div>Tipo de Pago</div>
+    </a>
+</li>
+
+<!-- Notificaciones -->
+<li class="menu-item">
+    <a href="{% url 'notificaciones' %}" class="menu-link">
+        <i class="menu-icon bx bx-bell"></i>
+        <div>Notificaciones</div>
+    </a>
+</li>
+
+<!-- Salir -->
+<li class="menu-item">
+    <a href="{% url 'logout' %}" class="menu-link logout">
+        <i class="menu-icon bx bx-log-out-circle"></i>
+        <div>Salir</div>
+    </a>
+</li>
+
+</ul>
+
+</aside>

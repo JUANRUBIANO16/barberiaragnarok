@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(document).ready(function () {
+
+    let table = $('.table').DataTable({
+        paging: true,
+        lengthChange: false,
+        searching: true,
+        ordering: true,
+        info: true,
+        pageLength: 5,
+        columnDefs: [
+            { orderable: false, targets: 4 }
+        ],
+        language: {
+            info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+            zeroRecords: "No se encontraron registros",
+            paginate: {
+                first: "Primero",
+                last: "Último",
+                next: "Siguiente",
+                previous: "Anterior"
+            }
+        }
+    });
+
+    // 🔍 filtro por ID
+    $('#filter-id').on('keyup', function(){
+        table.column(0).search(this.value).draw();
+    });
+
+    // 🔍 filtro por tipo de pago
+    $('#filter-tipo').on('keyup', function(){
+        table.column(2).search(this.value).draw();
+    });
+
+    // 🔢 cantidad de registros
+    $('#custom-length').on('change', function () {
+        table.page.len(this.value).draw();
+    });
+
+    // 💰 filtro por monto máximo
+    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+        let max = parseFloat($('#filter-monto').val()) || Infinity;
+        let monto = parseFloat(data[3].replace('$','')) || 0;
+
+        return monto <= max;
+    });
+
+    $('#filter-monto').on('keyup change', function () {
+        table.draw();
+    });
+
+});
+</script>
+
+<div class="container-xl">
+
+    {% if messages %}
+    <div class="mt-3">
+        {% for message in messages %}
+            <div class="alert 
+                {% if message.tags == 'error' %}alert-danger
+                {% elif message.tags == 'success' %}alert-success
+                {% elif message.tags == 'warning' %}alert-warning
+                {% else %}alert-info
+                {% endif %}
+                alert-dismissible fade show" role="alert">
+
+                {{ message }}
+
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="table-responsive">
+        <div class="table-wrapper">
+
+            <div class="table-title">
+                <div class="row">
+                    
+                    <div class="col-sm-4">
+                        <h2>Comprobantes <b>Registradas</b></h2>
+                    </div>
+                    <div class="col-sm-8">						
+                        <a href="#addModal" class="btn btn-primary" data-toggle="modal">
+    <i class="material-icons">&#xE863;</i> <span>Agregar Comprobante</span>
+</a>
+                        
+                    </div>
+                </div>
+            </div>
+    
+
+
+<div class="table-filter mb-2">
+    <div class="row">
+
+        <div class="col-sm-3">
+            <div class="show-entries">
+                <span>Mostrar</span>
+                <select id="custom-length" class="form-control">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                <span>entradas</span>
+            </div>
+        </div>
+
+        <div class="col-sm-9 d-flex align-items-center">
+
+            <div class="filter-group mr-2">
+                <label>ID Comprobante</label>
+                <input type="text" id="filter-id" class="form-control" placeholder="Buscar ID">
+            </div>
+
+            <div class="filter-group mr-2">
+                <label>Tipo Pago</label>
+                <input type="text" id="filter-tipo" class="form-control" placeholder="Ej: Efectivo">
+            </div>
+
+            <div class="filter-group">
+                <label>Monto máximo</label>
+                <input type="number" id="filter-monto" class="form-control" placeholder="Ej: 50000">
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<table class="table table-striped table-hover">
+<thead>
+<tr>
+    <th>ID</th>
+    <th>Venta</th>
+    <th>Tipo pago</th>
+    <th>Monto</th>
+    <th>Acciones</th>
+</tr>
+</thead>
+
+<tbody>
+{% for c in comprobantes %}
+<tr>
+    <td>{{ c.id }}</td>
+    <td><strong>Venta #{{ c.venta.id }}</strong></td>
+    <td>{{ c.tipo_pago.metodo }}</td>
+    <td>${{ c.monto }}</td>
+    <td>
+        <a href="#editModal{{ c.id }}" data-toggle="modal">
+            <i class="material-icons">&#xE254;</i>
+        </a>
+        <a href="#deleteModal{{ c.id }}" data-toggle="modal">
+            <i class="material-icons">&#xE872;</i>
+        </a>
+
+       <a href="{% url 'comprobante_pdf' c.id %}" target="_blank" title="Exportar a PDF">
+    <i class="material-icons">&#xE24D;</i>
+</a>
+
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+<!-- ================= ADD ================= -->
+<div id="addModal" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST" action="{% url 'crear_comprobantes' %}">
+{% csrf_token %}
+
+<div class="modal-header">
+    <h4 class="modal-title">Añadir Comprobante</h4>
+</div>
+
+<div class="modal-body">
+
+    <div class="form-group">
+        <label>Venta</label>
+        <select name="venta" class="form-control" required>
+            {% for v in ventas %}
+                <option value="{{ v.id }}">
+                    Venta #{{ v.id }} - ${{ v.total }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Tipo pago</label>
+        <select name="tipo_pago" class="form-control" required>
+            {% for t in tipo_pagos %}
+                <option value="{{ t.id }}">
+                    {{ t.metodo }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Monto</label>
+        <input type="text" class="form-control" 
+               value="Automático (total de la venta)" readonly>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-success">Guardar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+
+<!-- ================= EDIT ================= -->
+{% for c in comprobantes %}
+<div id="editModal{{ c.id }}" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST" action="{% url 'editar_comprobantes' c.id %}">
+{% csrf_token %}
+
+<div class="modal-header">
+    <h4 class="modal-title">Editar Comprobante</h4>
+</div>
+
+<div class="modal-body">
+
+    <div class="form-group">
+        <label>Venta</label>
+        <select name="venta" class="form-control">
+            {% for v in ventas %}
+                <option value="{{ v.id }}"
+                {% if v.id == c.venta.id %}selected{% endif %}>
+                    Venta #{{ v.id }} - ${{ v.total }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Tipo pago</label>
+        <select name="tipo_pago" class="form-control">
+            {% for t in tipo_pagos %}
+                <option value="{{ t.id }}"
+                {% if t.id == c.tipo_pago.id %}selected{% endif %}>
+                    {{ t.metodo }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Monto</label>
+        <input type="text" class="form-control"
+               value="{{ c.monto }}"
+               readonly>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-info">Guardar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+{% endfor %}
+
+<!-- ================= DELETE ================= -->
+{% for c in comprobantes %}
+<div id="deleteModal{{ c.id }}" class="modal fade">
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST" action="{% url 'eliminar_comprobantes' c.id %}">
+{% csrf_token %}
+
+<div class="modal-header">
+    <h4>Eliminar Comprobante</h4>
+</div>
+
+<div class="modal-body">
+    ¿Seguro que deseas eliminar este comprobante?
+</div>
+
+<div class="modal-footer">
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+{% endfor %}
+
+{% endblock %}

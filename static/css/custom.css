@@ -1,0 +1,120 @@
+/* --- Estilos Personalizados para DataTables Ultra Pro --- */
+
+/* 1. Contenedor Superior (Filtros y Botones) */
+.dt-container .flex.flex-col.md\:flex-row {
+    background: #f8fafc; /* slate-50 */
+    padding: 1.5rem;
+    border-radius: 1.5rem 1.5rem 0 0;
+    border: 1px solid #e2e8f0; /* slate-200 */
+    border-bottom: none;
+    margin-bottom: 0 !important;
+}
+
+/* 2. Estilo para el Selector de Registros (Length) */
+.dt-length label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #64748b; /* slate-500 */
+}
+
+.dt-length .dt-input {
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 0.75rem !important;
+    padding: 0.4rem 2rem 0.4rem 0.8rem !important;
+    font-weight: 700;
+    color: #1e293b;
+    outline: none !important;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.dt-length .dt-input:focus {
+    border-color: #6366f1 !important; /* indigo-500 */
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
+}
+
+/* 3. Estilo para la Caja de Búsqueda (Search) */
+.dt-search label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    margin-right: 0.5rem;
+}
+
+.dt-search .dt-input {
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 1rem !important;
+    padding: 0.6rem 1rem !important;
+    background-color: #ffffff !important;
+    min-width: 200px;
+    font-weight: 600;
+    color: #334155;
+    outline: none !important;
+    transition: all 0.3s;
+}
+
+.dt-search .dt-input:focus {
+    border-color: #6366f1 !important;
+    background-color: #fff !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1) !important;
+}
+
+/* 4. Estilos de Botones de Exportación */
+.dt-buttons {
+    display: flex !important;
+    gap: 0.3rem;
+}
+
+.dt-button {
+    border: none !important;
+    padding: 0.3rem !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    border-radius: 0.75rem !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dt-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dt-button:active {
+    transform: scale(0.95);
+}
+
+/* 5. Ajuste para Iconos dentro de Botones */
+.dt-button span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dt-button svg {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+/* 6. Responsividad */
+@media (max-width: 768px) {
+    .dt-container .flex.flex-col.md\:flex-row {
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+    
+    .dt-search .dt-input {
+        width: 100% !important;
+        min-width: auto;
+    }
+    
+    .dt-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+}

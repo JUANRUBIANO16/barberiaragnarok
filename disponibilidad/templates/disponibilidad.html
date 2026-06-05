@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<style>
+.dataTables_filter {
+    display: none;
+}
+</style>
+
+<script>
+$(document).ready(function(){
+
+    var totalCols = $('.table thead th').length;
+
+    $('.table').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "ordering": true,
+        "info": true,
+        "pageLength": 5,
+        "columnDefs": [
+            { "orderable": false, "targets": totalCols - 1 }
+        ],
+        "language": {
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "paginate": {
+                "next": "Siguiente",
+                "previous": "Anterior"
+            },
+            "zeroRecords": "No hay horarios"
+        }
+    });
+
+});
+</script>
+
+<div class="container-xl">
+
+    <!-- MENSAJES -->
+    {% if messages %}
+    <div class="mt-3">
+        {% for message in messages %}
+            <div class="alert 
+                {% if message.tags == 'error' %}alert-danger
+                {% else %}alert-success
+                {% endif %}
+                alert-dismissible fade show">
+
+                {{ message }}
+
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="table-responsive">
+        <div class="table-wrapper">
+
+            <!-- HEADER -->
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h2>Mi <b>Disponibilidad</b></h2>
+                    </div>
+                    <div class="col-sm-8">						
+                        <a href="#addModal" class="btn btn-primary" data-toggle="modal">
+                            <i class="material-icons">&#xE145;</i> <span>Agregar Horario</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLA -->
+            <table id="tablaDisponibilidad" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Día</th>
+                        <th>Hora Inicio</th>
+                        <th>Hora Fin</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for d in disponibilidades %}
+                    <tr>
+                        <td>{{ d.get_dia_semana_display }}</td>
+                        <td>{{ d.hora_inicio }}</td>
+                        <td>{{ d.hora_fin }}</td>
+                        <td>
+                            <a href="#editModal{{ d.id }}" data-toggle="modal">
+                                <i class="material-icons">&#xE254;</i>
+                            </a>
+                            <a href="#deleteModal{{ d.id }}" data-toggle="modal">
+                                <i class="material-icons">&#xE872;</i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td class="text-center">No tienes horarios</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<!-- ===================== -->
+<!-- MODAL CREAR -->
+<!-- ===================== -->
+<div id="addModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form method="POST" action="{% url 'crear_disponibilidad' %}">
+                {% csrf_token %}
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Agregar Horario</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label>Día</label>
+                        <select name="dia_semana" class="form-control" required>
+                            <option value="">Seleccione</option>
+                            <option value="0">Lunes</option>
+                            <option value="1">Martes</option>
+                            <option value="2">Miércoles</option>
+                            <option value="3">Jueves</option>
+                            <option value="4">Viernes</option>
+                            <option value="5">Sábado</option>
+                            <option value="6">Domingo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hora Inicio</label>
+                        <input type="time" name="hora_inicio" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hora Fin</label>
+                        <input type="time" name="hora_fin" class="form-control" required>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-success">Guardar</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- EDITAR -->
+{% for d in disponibilidades %}
+<div id="editModal{{ d.id }}" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form method="POST" action="{% url 'editar_disponibilidad' d.id %}">
+                {% csrf_token %}
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Editar Horario</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label>Día</label>
+                        <select name="dia_semana" class="form-control">
+                            {% for i, nombre in d.DIAS_SEMANA %}
+                                <option value="{{ i }}" {% if d.dia_semana == i %}selected{% endif %}>
+                                    {{ nombre }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hora Inicio</label>
+                        <input type="time" name="hora_inicio" value="{{ d.hora_inicio }}" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hora Fin</label>
+                        <input type="time" name="hora_fin" value="{{ d.hora_fin }}" class="form-control">
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-info">Actualizar</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- ELIMINAR -->
+{% for d in disponibilidades %}
+<div id="deleteModal{{ d.id }}" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form method="POST" action="{% url 'eliminar_disponibilidad' d.id %}">
+                {% csrf_token %}
+
+                <div class="modal-header">
+                    <h4 class="modal-title">Eliminar</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <p>¿Eliminar este horario?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-danger">Eliminar</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

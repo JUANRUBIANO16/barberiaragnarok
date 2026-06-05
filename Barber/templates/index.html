@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ragnarok Barber Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/barber.css' %}">
+</head>
+<body>
+
+
+    <!-- HEADER -->
+    <header>
+        <img src="{% static 'img/jj2.png' %}" alt="Logo Barbería" class="logo" />
+        <nav>
+            <a href="#inicio">Inicio</a>
+            <a href="#sobre-nosotros">Sobre nosotros</a>
+            <a href="#servicios">Servicios</a>
+            <a href="#agenda">Reservar</a>
+            <a href="#ubicacion">Ubícanos</a>
+            <a href="{% url 'loguin' %}">Admin</a>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <section id="inicio" class="hero" style="background-image: url('{% static 'img/jj2.png' %}');">
+        <div class="hero-content">
+            <h1>Ragnarok Barber Shop</h1>
+        </div>
+    </section>
+
+    <!-- SOBRE NOSOTROS -->
+<section id="sobre-nosotros" class="sobre-nosotros" style="background-image: url('{% static 'img/sobre-nosotros-bg.jpg' %}');">
+    <div class="sobre-contenido">
+        
+        <h2>Sobre Nosotros</h2>
+        <hr class="decorativo">
+        <p>
+            En <strong>Ragnarok Barber Shop</strong> nos apasiona ofrecer los mejores servicios de barbería 
+            y cuidado personal. Nuestro equipo de expertos combina técnicas clásicas y modernas para brindarte 
+            una experiencia única, cuidando cada detalle para que salgas satisfecho y renovado.
+        </p>
+    </div>
+</section>
+
+    <!-- NUESTROS SERVICIOS -->
+    <section id="servicios" class="nuestros-servicios">
+        <h2 class="titulo-servicios">Nuestros Servicios</h2>
+        <div class="servicios-grid">
+            {% for servicio in servicios %}
+            <div class="servicio-box">
+                {% if servicio.imagen %}
+    <img src="{{ servicio.imagen.url }}" alt="{{ servicio.nombre }}" class="servicio-imagen">
+{% else %}
+    <img src="/static/img/default.jpg" alt="sin imagen" class="servicio-imagen">
+{% endif %}
+                <h3>— <span>{{ servicio.nombre }}</span></h3>
+                <div class="servicio-descripcion">{{ servicio.descripcion }}</div>
+                <div class="servicio-footer">
+                    <strong>${{ servicio.precio|floatformat:2 }}</strong>
+                    <span class="badge">{{ servicio.categoria }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- FORMULARIO AGENDA -->
+    <section id="agenda" class="agenda-servicio">
+        <div class="agenda-contenido">
+            <div class="agenda-info">
+                <h2>AGENDA TU <br> SERVICIO</h2>
+                <p>Rellena el formulario y contáctanos.</p>
+            </div>
+
+            <form class="agenda-formulario" action="{% url 'cita' %}" method="POST">
+                {% csrf_token %}
+                <input type="text" name="nombre" placeholder="Tu nombre" required>
+                <input type="text" name="telefono" placeholder="Num contacto" required>
+                <input type="email" name="email" placeholder="Email" required>
+                  <select name="servicio" required>
+        <option value="">Selecciona un servicio</option>
+        {% for servicio in servicios %}
+            <option value="{{ servicio.id }}">{{ servicio.nombre }}</option>
+        {% endfor %}
+    </select>
+                <textarea name="mensaje" placeholder="Mensaje adicional" rows="3"></textarea>
+                <button type="submit" id="btn">Enviar Solicitud</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- UBICACIÓN -->
+    <section id="ubicacion" class="ubicacion">
+        <h2 class="titulo-ubicacion"><span>¿Dónde nos puedes ubicar?</span></h2>
+        <div class="mapa-ubicacion">
+            <iframe src="https://www.google.com/maps?q=Chapinero%20Bogota&output=embed" width="100%" height="450" loading="lazy" title="Mapa"></iframe>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer-vikings">
+        <img src="{% static 'img/jj2.png' %}" alt="Vikings Barber Shop" width="220" />
+        <h2>
+          Ragnarok <br />
+          <span>BARBER SHOP</span>
+        </h2>
+        <div class="footer-stars">★★★★★</div>
+        <b>Todos los derechos reservados - Vikingsbarber.com</b>
+    </footer>
+
+    <!-- SCRIPT AJAX PARA ENVÍO DE FORMULARIO -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.querySelector(".agenda-formulario");
+        const btn = document.getElementById("btn");
+
+        form.addEventListener("submit", function(e) {
+            e.preventDefault(); // Evita el envío normal del formulario
+
+            btn.disabled = true;
+            btn.textContent = "Enviando...";
+
+            const formData = new FormData(form);
+
+            fetch("{% url 'cita' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": formData.get('csrfmiddlewaretoken'),
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success){
+                    alert(data.message);
+                    form.reset();
+                } else {
+                    alert("Error: " + (data.error || "No se pudo enviar la solicitud."));
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Ocurrió un error inesperado.");
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.textContent = "Enviar Solicitud";
+            });
+        });
+    });
+    </script>
+
+</body>
+</html>
