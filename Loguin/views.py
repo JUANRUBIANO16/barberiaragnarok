@@ -73,7 +73,7 @@ def recuperar_password(request):
                 message=(
                     f"Hola {user.nombre},\n\n"
                     f"Entra aquí para cambiar tu contraseña:\n{link}\n\n"
-                    f"Si no fuiste tú ignora este mensaje."
+                    f"Si no fuiste tú, ignora este mensaje."
                 ),
                 from_email='soporte.rubianobarber@gmail.com',
                 recipient_list=[email],
