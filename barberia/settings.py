@@ -70,8 +70,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'barberia.wsgi.application'
 
-# DATABASE
-import os
+# DATABAS
 
 DATABASES = {
     'default': {
