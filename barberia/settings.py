@@ -3,6 +3,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv()
 
 # SECURITY
 SECRET_KEY = 'django-insecure-u6d5xx@(h*f@0xf89k85&usj6y3nxnqsh^l@j5dlwbaksa)'
@@ -21,7 +22,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
 
     'usuarios.apps.UsuariosConfig',
     'Barber',
@@ -89,11 +92,43 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# MEDIA
+# MEDIA (local fallback; Cloudinary en producción)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+def _cloudinary_url():
+    url = os.environ.get('CLOUDINARY_URL')
+    if url:
+        return url
+    cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME')
+    api_key = os.environ.get('CLOUDINARY_API_KEY')
+    api_secret = os.environ.get('CLOUDINARY_API_SECRET')
+    if cloud_name and api_key and api_secret:
+        return f'cloudinary://{api_key}:{api_secret}@{cloud_name}'
+    return None
+
+
+_cloudinary = _cloudinary_url()
+USE_CLOUDINARY = bool(_cloudinary)
+
+if USE_CLOUDINARY:
+    os.environ['CLOUDINARY_URL'] = _cloudinary
+    import cloudinary
+    cloudinary.config(secure=True)
+
+STORAGES = {
+    'default': {
+        'BACKEND': (
+            'cloudinary_storage.storage.MediaCloudinaryStorage'
+            if USE_CLOUDINARY
+            else 'django.core.files.storage.FileSystemStorage'
+        ),
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 # TIME
 LANGUAGE_CODE = 'en-us'
@@ -110,9 +145,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ragnarockbarber@gmail.com'
 EMAIL_HOST_PASSWORD = 'cepp jknc lyxu tkvr'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-# ENV
-load_dotenv()
 
 TWILIO_SID = os.getenv("TWILIO_SID")
 TWILIO_TOKEN = os.getenv("TWILIO_TOKEN")
