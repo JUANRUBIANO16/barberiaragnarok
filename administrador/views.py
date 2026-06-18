@@ -157,3 +157,28 @@ def dashboard(request):
         'labels_metodo': labels_metodo,
         'data_metodo': data_metodo
     })
+
+
+@login_required
+def perfil(request):
+    user_id = request.session.get('user_id')
+    usuario = Usuario.objects.get(id=user_id)
+
+    if request.method == 'POST':
+        usuario.nombre = request.POST.get('nombre')
+        usuario.apellido = request.POST.get('apellido')
+        usuario.email = request.POST.get('email')
+
+        password = request.POST.get('password')
+        if password:
+            usuario.password = make_password(password)
+
+        if 'foto' in request.FILES:
+            usuario.foto = request.FILES['foto']
+
+        usuario.save()
+        return redirect('perfil')
+
+    return render(request, 'administrador/perfil.html', {
+        'usuario': usuario
+    })
