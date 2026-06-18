@@ -37,11 +37,9 @@
 
 <div class="table-title">
 <div class="row">
-
-<div class="col-sm-6">
-<h2>Solicitar <b>Cita</b></h2>
-</div>
-
+    <div class="col-sm-6">
+        <h2>Solicitar <b>Cita</b></h2>
+    </div>
 </div>
 </div>
 
@@ -50,73 +48,75 @@
 
 <div class="row">
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Nombre</label>
-        <input type="text"
-               name="nombre"
-               class="form-control"
-               required>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text"
+                   name="nombre"
+                   class="form-control"
+                   value="{{ usuario.nombre }} {{ usuario.apellido }}"
+                   readonly>
+        </div>
     </div>
-</div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Teléfono</label>
-        <input type="text"
-               name="telefono"
-               class="form-control"
-               required>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text"
+                   name="telefono"
+                   class="form-control"
+                   required>
+        </div>
     </div>
-</div>
 
 </div>
 
 <div class="row">
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Email</label>
-        <input type="email"
-               name="email"
-               class="form-control"
-               required>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email"
+                   name="email"
+                   class="form-control"
+                   value="{{ usuario.email }}"
+                   readonly>
+        </div>
     </div>
-</div>
 
-<div class="col-md-6">
-    <div class="form-group">
-        <label>Servicio</label>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Servicio</label>
 
-        <select name="servicio"
-                class="form-control"
-                required>
+            <select name="servicio"
+                    class="form-control"
+                    required>
 
-            <option value="">Seleccione</option>
+                <option value="">Seleccione</option>
 
-            {% for s in servicios %}
-            <option value="{{ s.id }}">
-                {{ s.nombre }}
-            </option>
-            {% endfor %}
+                {% for s in servicios %}
+                    <option value="{{ s.id }}">
+                        {{ s.nombre }}
+                    </option>
+                {% endfor %}
 
-        </select>
+            </select>
 
+        </div>
     </div>
-</div>
 
 </div>
 
 <div class="row">
 
-<div class="col-md-12">
-    <div class="form-group">
-        <label>Mensaje (opcional)</label>
-        <textarea name="mensaje"
-                  class="form-control"
-                  rows="3"></textarea>
+    <div class="col-md-12">
+        <div class="form-group">
+            <label>Mensaje (opcional)</label>
+            <textarea name="mensaje"
+                      class="form-control"
+                      rows="3"></textarea>
+        </div>
     </div>
-</div>
 
 </div>
 
@@ -125,10 +125,7 @@
     <button type="submit"
             class="btn btn-success">
 
-        <i class="material-icons">
-            send
-        </i>
-
+        <i class="material-icons">send</i>
         Enviar Solicitud
 
     </button>

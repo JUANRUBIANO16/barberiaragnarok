@@ -447,15 +447,16 @@ def reporte_citas_pdf(request):
     return response
 
 
-
 @login_required
 def agendar_cita(request):
     servicios = Servicio.objects.all()
 
-    return render(request, 'citas/agendar_cita.html', {
-        'servicios': servicios
-    })
+    usuario = Usuario.objects.get(id=request.session['user_id'])
 
+    return render(request, 'citas/agendar_cita.html', {
+        'servicios': servicios,
+        'usuario': usuario
+    })
 @login_required
 def mis_citas(request):
     cliente = Usuario.objects.get(
