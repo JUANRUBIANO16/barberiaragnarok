@@ -1,33 +1,30 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}
-Dashboard
-{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css">
-<link rel="stylesheet" href="{% static 'css/datatables.min.css' %}" />
-<link rel="stylesheet" href="{% static 'css/custom.css' %}" />
 
 <style>
-    #sidebar {
-        transition: width 0.3s ease, transform 0.3s ease;
-    }
-
-    .card-base {
+    .card-base{
         height: 150px;
+        transition: all 0.2s ease;
     }
 
-    .card-icon {
+    .card-base:hover{
+        transform: translateY(-3px);
+    }
+
+    .card-icon{
         width: 52px;
         height: 52px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-radius:12px;
     }
 </style>
 
@@ -35,17 +32,16 @@ Dashboard
     Bienvenido, {{ request.session.user_nombre }}
 </div>
 
-<!-- ======================= CARDS PRINCIPALES ======================= -->
+<!-- ===================== MODULOS BASE ===================== -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
     {% if request.session.user_rol == 'admin' %}
-
-    <a href="{% url 'usuarios' %}" class="group">
+    <a href="{% url 'usuarios' %}">
         <div class="bg-white p-6 rounded-2xl shadow-sm border card-base">
             <div class="flex justify-between">
                 <div>
                     <p class="text-sm text-gray-500">Total usuarios</p>
-                    <h2 class="text-2xl font-bold">{{ total_usuarios }}</h2>
+                    <h2 class="text-2xl font-bold text-purple-600">{{ total_usuarios }}</h2>
                 </div>
                 <div class="card-icon bg-purple-100 text-purple-600">
                     <i class="mdi mdi-account-group text-2xl"></i>
@@ -53,15 +49,14 @@ Dashboard
             </div>
         </div>
     </a>
-
     {% endif %}
 
-    <a href="{% url 'listar_servicios' %}" class="group">
+    <a href="{% url 'listar_servicios' %}">
         <div class="bg-white p-6 rounded-2xl shadow-sm border card-base">
             <div class="flex justify-between">
                 <div>
                     <p class="text-sm text-gray-500">Total servicios</p>
-                    <h2 class="text-2xl font-bold">{{ total_servicios }}</h2>
+                    <h2 class="text-2xl font-bold text-orange-600">{{ total_servicios }}</h2>
                 </div>
                 <div class="card-icon bg-orange-100 text-orange-600">
                     <i class="mdi mdi-package-variant-closed text-2xl"></i>
@@ -71,12 +66,12 @@ Dashboard
     </a>
 
     {% if request.session.user_rol == 'admin' %}
-    <a href="{% url 'comprobantes' %}" class="group">
+    <a href="{% url 'comprobantes' %}">
         <div class="bg-white p-6 rounded-2xl shadow-sm border card-base">
             <div class="flex justify-between">
                 <div>
                     <p class="text-sm text-gray-500">Comprobantes</p>
-                    <h2 class="text-2xl font-bold">{{ total_comprobantes }}</h2>
+                    <h2 class="text-2xl font-bold text-blue-600">{{ total_comprobantes }}</h2>
                 </div>
                 <div class="card-icon bg-blue-100 text-blue-600">
                     <i class="mdi mdi-receipt-text text-2xl"></i>
@@ -88,82 +83,105 @@ Dashboard
 
 </div>
 
-<!-- ======================= ADMIN ======================= -->
+<!-- ===================== ADMIN ===================== -->
 {% if request.session.user_rol == 'admin' %}
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 
     <a href="{% url 'ventas' %}">
         <div class="bg-white p-6 rounded-2xl shadow-sm border card-base">
-            <p>Ventas de hoy</p>
-            <h2 class="text-2xl font-bold">{{ ventas_totales }}</h2>
+            <p class="text-gray-500">Ventas de hoy</p>
+            <h2 class="text-2xl font-bold text-green-600">{{ ventas_totales }}</h2>
         </div>
     </a>
 
     <a href="{% url 'ventas' %}">
         <div class="bg-white p-6 rounded-2xl shadow-sm border card-base">
-            <p>Total ventas</p>
-            <h2 class="text-2xl font-bold">${{ dinero_total }}</h2>
+            <p class="text-gray-500">Total ventas</p>
+            <h2 class="text-2xl font-bold text-green-600">${{ dinero_total }}</h2>
         </div>
     </a>
 
 </div>
 {% endif %}
 
-<!-- ======================= BARBERO ======================= -->
+<!-- ===================== BARBERO ===================== -->
 {% if request.session.user_rol == 'barbero' %}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
     <a href="{% url 'citas' %}">
         <div class="bg-white p-6 rounded-2xl shadow-sm border card-base">
-            <p>Mis citas hoy</p>
-            <h2 class="text-2xl font-bold">{{ mis_citas_hoy }}</h2>
+            <p class="text-gray-500">Mis citas hoy</p>
+            <h2 class="text-2xl font-bold text-blue-600">{{ mis_citas_hoy }}</h2>
         </div>
     </a>
 
     <a href="{% url 'ventas' %}">
         <div class="bg-white p-6 rounded-2xl shadow-sm border card-base">
-            <p>Mis ventas hoy</p>
-            <h2 class="text-2xl font-bold">{{ mis_ventas_hoy }}</h2>
+            <p class="text-gray-500">Mis ventas hoy</p>
+            <h2 class="text-2xl font-bold text-green-600">{{ mis_ventas_hoy }}</h2>
         </div>
     </a>
 
     <a href="{% url 'ventas' %}">
         <div class="bg-white p-6 rounded-2xl shadow-sm border card-base">
-            <p>Total mes</p>
-            <h2 class="text-2xl font-bold">${{ mi_total_mes }}</h2>
+            <p class="text-gray-500">Total mes</p>
+            <h2 class="text-2xl font-bold text-purple-600">${{ mi_total_mes }}</h2>
         </div>
     </a>
 
 </div>
 {% endif %}
 
-<!-- ======================= CLIENTE (UNIFICADO AL MISMO DISEÑO) ======================= -->
+<!-- ===================== CLIENTE (MISMO NIVEL VISUAL) ===================== -->
 {% if request.session.user_rol == 'cliente' %}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
     <a href="{% url 'agendar_cita' %}">
         <div class="bg-white p-6 rounded-2xl shadow-sm border card-base">
-            <p>Agendar cita</p>
-            <h2 class="text-2xl font-bold">—</h2>
+            <div class="flex justify-between">
+                <div>
+                    <p class="text-gray-500">Agendar cita</p>
+                    <h2 class="text-2xl font-bold text-blue-600">—</h2>
+                </div>
+                <div class="card-icon bg-blue-100 text-blue-600">
+                    <i class="mdi mdi-calendar-plus text-2xl"></i>
+                </div>
+            </div>
         </div>
     </a>
 
     <a href="{% url 'mis_citas' %}">
         <div class="bg-white p-6 rounded-2xl shadow-sm border card-base">
-            <p>Mis citas</p>
-            <h2 class="text-2xl font-bold">—</h2>
+            <div class="flex justify-between">
+                <div>
+                    <p class="text-gray-500">Mis citas</p>
+                    <h2 class="text-2xl font-bold text-green-600">—</h2>
+                </div>
+                <div class="card-icon bg-green-100 text-green-600">
+                    <i class="mdi mdi-calendar-check text-2xl"></i>
+                </div>
+            </div>
         </div>
     </a>
 
     <a href="{% url 'historial_citas' %}">
         <div class="bg-white p-6 rounded-2xl shadow-sm border card-base">
-            <p>Historial</p>
-            <h2 class="text-2xl font-bold">—</h2>
+            <div class="flex justify-between">
+                <div>
+                    <p class="text-gray-500">Historial</p>
+                    <h2 class="text-2xl font-bold text-purple-600">—</h2>
+                </div>
+                <div class="card-icon bg-purple-100 text-purple-600">
+                    <i class="mdi mdi-history text-2xl"></i>
+                </div>
+            </div>
         </div>
     </a>
 
 </div>
 {% endif %}
+
+{% endblock %}
 
 <!-- ======================= GRÁFICAS ======================= -->
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
