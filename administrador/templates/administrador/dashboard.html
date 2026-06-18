@@ -43,50 +43,61 @@
     Bienvenido, {{ request.session.user_nombre }}
 </div>
 
-<!-- ===================== CARD BASE STYLE ===================== -->
-<!-- todas las cards usan exactamente este diseño -->
-<!-- =========================================================== -->
+
+
+<!-- ======================= MODULOS COMPARTIDOS ======================= -->
+
+{% if request.session.user_rol != 'cliente' %}
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
     {% if request.session.user_rol == 'admin' %}
     <a href="{% url 'usuarios' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
-            <div class="flex justify-between items-center">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
+            <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-bold text-gray-500 uppercase">Total usuarios</p>
-                    <h2 class="text-3xl font-bold text-gray-800">{{ total_usuarios }}</h2>
+                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Total usuarios</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mt-1">{{ total_usuarios }}</h2>
                 </div>
-                <i class="mdi mdi-account-group text-4xl text-purple-600"></i>
+                <div class="bg-purple-100 p-4 rounded-xl text-purple-600">
+                    <i class="mdi mdi-account-group text-3xl"></i>
+                </div>
             </div>
         </div>
     </a>
     {% endif %}
 
     <a href="{% url 'listar_servicios' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
-            <div class="flex justify-between items-center">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
+            <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-bold text-gray-500 uppercase">Total servicios</p>
-                    <h2 class="text-3xl font-bold text-gray-800">{{ total_servicios }}</h2>
+                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Total servicios</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mt-1">{{ total_servicios }}</h2>
                 </div>
-                <i class="mdi mdi-package-variant-closed text-4xl text-orange-600"></i>
+                <div class="bg-orange-100 p-4 rounded-xl text-orange-600">
+                    <i class="mdi mdi-package-variant-closed text-3xl"></i>
+                </div>
             </div>
         </div>
     </a>
 
     <a href="{% url 'comprobantes' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
-            <div class="flex justify-between items-center">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
+            <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-bold text-gray-500 uppercase">Comprobantes</p>
-                    <h2 class="text-3xl font-bold text-gray-800">{{ total_comprobantes }}</h2>
+                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Comprobantes</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mt-1">{{ total_comprobantes }}</h2>
                 </div>
-                <i class="mdi mdi-receipt-text text-4xl text-blue-600"></i>
+                <div class="bg-blue-100 p-4 rounded-xl text-blue-600">
+                    <i class="mdi mdi-receipt-text text-3xl"></i>
+                </div>
             </div>
         </div>
     </a>
+
 </div>
+
+{% endif %}
 
 <!-- ===================== ADMIN ===================== -->
 {% if request.session.user_rol == 'admin' %}
