@@ -99,10 +99,6 @@ def cancelar_cita(request, id):
 
     return redirect('notificaciones')
 
-
-# ==============================
-# ACEPTAR CITA (CREA CLIENTE + CITA + SMS)
-# ==============================
 def aceptar_cita(request, id):
     try:
         n = SolicitudCita.objects.get(id=id)
@@ -121,7 +117,7 @@ def aceptar_cita(request, id):
             barbero = Usuario.objects.get(id=barbero_id)
             servicio = Servicio.objects.get(id=servicio_id)
 
-            # evitar duplicados
+            # validar duplicado
             if Cita.objects.filter(
                 fecha=fecha,
                 hora=hora,
@@ -131,17 +127,13 @@ def aceptar_cita(request, id):
                 return redirect('notificaciones')
 
             # ==========================
-            # BUSCAR O CREAR CLIENTE
+            # SOLO CLIENTE EXISTENTE
             # ==========================
             cliente = Usuario.objects.filter(email=n.email).first()
 
             if not cliente:
-                cliente = Usuario.objects.create(
-                    nombre=n.nombre,
-                    email=n.email if n.email else f"temp{n.id}@mail.com",
-                    tipo_usuario='cliente',
-                    password=make_password('123456')
-                )
+                messages.error(request, "El cliente no existe en el sistema")
+                return redirect('notificaciones')
 
             # ==========================
             # CREAR CITA
@@ -155,9 +147,9 @@ def aceptar_cita(request, id):
                 servicio=servicio
             )
 
-            
-            # mensaje sms
-           
+            # ==========================
+            # SMS
+            # ==========================
             mensaje = f"""
 Hola {n.nombre}
 
@@ -170,18 +162,19 @@ Servicio: {servicio.nombre}
 Te esperamos 💈
 """
 
-            # enviar SMS
             if n.telefono:
                 enviar_sms(n.telefono, mensaje)
 
-            # actualizar estado
             n.estado = 'aceptada'
             n.save()
 
-            messages.success(request, "Cita creada correctamente y sms creado")
+            messages.success(request, "Cita creada correctamente")
+
+    except SolicitudCita.DoesNotExist:
+        messages.error(request, "Solicitud no existe")
 
     except Exception as e:
-        print("ERROR REAL:", str(e))
+        print("ERROR:", str(e))
         messages.error(request, f"Error: {e}")
 
     return redirect('notificaciones')

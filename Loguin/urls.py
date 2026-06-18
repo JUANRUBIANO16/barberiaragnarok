@@ -1,5 +1,7 @@
 from django.urls import path
-from .views import login_view, logout_view, recuperar_password, reset_password
+
+from citas import views
+from .views import login_view, logout_view, recuperar_password, register_view, reset_password
 
 urlpatterns = [
     path('', login_view, name='loguin'),
@@ -7,4 +9,5 @@ urlpatterns = [
     path('recuperar-password/', recuperar_password, name='recuperar_password'),
     
     path('reset/<uuid:token>/', reset_password, name='reset_password'),
+    path('registro/', register_view, name='registro'),
 ]

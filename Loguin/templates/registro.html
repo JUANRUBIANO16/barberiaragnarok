@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro Cliente</title>
+    <link rel="stylesheet" href="{% static 'css/logins.css' %}">
+</head>
+<body>
+
+<div class="login-container">
+    <div class="login-card">
+
+        <h1>Registro Cliente</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="custom-alert {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'registro' %}">
+            {% csrf_token %}
+
+            <input type="text" name="nombre" placeholder="Nombre" required>
+
+            <input type="text" name="apellido" placeholder="Apellido" required>
+
+            <input type="email" name="email" placeholder="Correo" required>
+
+            <input type="password" name="password" placeholder="Contraseña" required>
+
+            <input type="password" name="confirm" placeholder="Confirmar contraseña" required>
+
+            <button type="submit">Registrarse</button>
+        </form>
+
+        <a href="{% url 'loguin' %}">Ya tengo cuenta</a>
+
+    </div>
+</div>
+
+</body>
+</html>

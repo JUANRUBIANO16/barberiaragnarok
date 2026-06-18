@@ -123,3 +123,51 @@ def reset_password(request, token):
             return redirect('loguin')
 
     return render(request, 'reset_password.html')
+
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.hashers import make_password
+from usuarios.models import Usuario
+
+
+def registro_cliente(request):
+
+    # si ya está logueado
+    if request.session.get('user_id'):
+        return redirect('dashboard')
+
+    if request.method == "POST":
+
+        nombre = request.POST.get('nombre')
+        apellido = request.POST.get('apellido')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm = request.POST.get('confirm')
+
+        if not all([nombre, apellido, email, password, confirm]):
+            messages.error(request, "Completa todos los campos")
+            return redirect('registro')
+
+        if password != confirm:
+            messages.error(request, "Las contraseñas no coinciden")
+            return redirect('registro')
+
+        if Usuario.objects.filter(email=email).exists():
+            messages.error(request, "El correo ya está registrado")
+            return redirect('registro')
+
+        Usuario.objects.create(
+            nombre=nombre,
+            apellido=apellido,
+            email=email,
+            password=make_password(password),
+            tipo_usuario='cliente'
+        )
+
+        messages.success(request, "Registro exitoso, ya puedes iniciar sesión")
+        return redirect('loguin')
+
+    return render(request, "registro.html")
