@@ -2,11 +2,15 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
-SECRET_KEY = 'django-insecure-u6d5xx@(h*f@0xf89k85&usj6y3nxnqsh^l@j5dlwbaksa)'
-DEBUG = True
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-fallback-only")
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
@@ -21,6 +25,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'cloudinary',
+    'cloudinary_storage',
 
     'usuarios.apps.UsuariosConfig',
     'Barber',
@@ -86,13 +93,19 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static'
 ]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-LANGUAGE_CODE = 'en-us'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv("CLOUDINARY_CLOUD_NAME"),
+    'API_KEY': os.getenv("CLOUDINARY_API_KEY"),
+    'API_SECRET': os.getenv("CLOUDINARY_API_SECRET"),
+}
+
+LANGUAGE_CODE = 'es-es'
 TIME_ZONE = 'America/Bogota'
+
 USE_I18N = True
 USE_TZ = True
 
