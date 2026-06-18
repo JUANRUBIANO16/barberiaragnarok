@@ -358,6 +358,9 @@
 
 {% endif %}
 
+
+
+{% if request.session.user_rol == '!cliente' %}
 <!-- Notificaciones -->
 <li class="menu-item">
     <a href="{% url 'notificaciones' %}" class="menu-link">
@@ -365,6 +368,7 @@
         <div>Notificaciones</div>
     </a>
 </li>
+{% endif %}
 
 <!-- Salir -->
 <li class="menu-item">
