@@ -363,7 +363,7 @@
 
 
 
-{% if request.session.user_rol == '!cliente' %}
+{% if request.session.user_rol == 'admin' %}
 <!-- Notificaciones -->
 <li class="menu-item">
     <a href="{% url 'notificaciones' %}" class="menu-link">
