@@ -453,7 +453,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 from Servicios.models import Servicio
-from Barber.models import Barbero
 from .models import SolicitudCita
 
 
