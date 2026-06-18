@@ -9,70 +9,6 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="{% static 'css/table.css' %}">
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
-<script>
-$(document).ready(function(){
-
-    function formato12h(hora24){
-        let [h,m] = hora24.split(":");
-        h = parseInt(h);
-
-        let sufijo = h >= 12 ? "PM" : "AM";
-        h = h % 12;
-        h = h ? h : 12;
-
-        return `${h}:${m} ${sufijo}`;
-    }
-
-    function cargarHoras(){
-
-        let barbero = $("#barbero").val();
-        let fecha = $("#fecha").val();
-
-        if(barbero && fecha){
-
-            fetch(`/citas/obtener-horas/?barbero=${barbero}&fecha=${fecha}`)
-            .then(res => res.json())
-            .then(data => {
-
-                let select = $("#hora");
-                select.html('');
-
-                if(data.horas.length > 0){
-
-                    data.horas.forEach(h => {
-
-                        select.append(
-                            `<option value="${h}">
-                                ${formato12h(h)}
-                            </option>`
-                        );
-
-                    });
-
-                }else{
-
-                    select.append(
-                        `<option value="">
-                            Sin disponibilidad
-                        </option>`
-                    );
-
-                }
-
-            });
-
-        }
-
-    }
-
-    $("#barbero").change(cargarHoras);
-    $("#fecha").change(cargarHoras);
-
-});
-</script>
-
 <div class="container-xl">
 
 {% if messages %}
@@ -103,52 +39,35 @@ $(document).ready(function(){
 <div class="row">
 
 <div class="col-sm-6">
-<h2>Agendar <b>Cita</b></h2>
+<h2>Solicitar <b>Cita</b></h2>
 </div>
 
 </div>
 </div>
 
-<form method="POST" action="{% url 'crear_Cita' %}">
+<form method="POST" action="{% url 'crear_solicitud_cita' %}">
 {% csrf_token %}
 
 <div class="row">
 
 <div class="col-md-6">
-
     <div class="form-group">
-        <label>Fecha</label>
-        <input type="date"
-               id="fecha"
-               name="fecha"
+        <label>Nombre</label>
+        <input type="text"
+               name="nombre"
                class="form-control"
                required>
     </div>
-
 </div>
 
 <div class="col-md-6">
-
     <div class="form-group">
-        <label>Barbero</label>
-
-        <select id="barbero"
-                name="barbero"
-                class="form-control"
-                required>
-
-            <option value="">Seleccione</option>
-
-            {% for b in barberos %}
-            <option value="{{ b.id }}">
-                {{ b.nombre }}
-            </option>
-            {% endfor %}
-
-        </select>
-
+        <label>Teléfono</label>
+        <input type="text"
+               name="telefono"
+               class="form-control"
+               required>
     </div>
-
 </div>
 
 </div>
@@ -156,33 +75,24 @@ $(document).ready(function(){
 <div class="row">
 
 <div class="col-md-6">
-
     <div class="form-group">
-        <label>Hora</label>
-
-        <select id="hora"
-                name="hora"
-                class="form-control"
-                required>
-
-            <option value="">
-                Seleccione fecha y barbero
-            </option>
-
-        </select>
-
+        <label>Email</label>
+        <input type="email"
+               name="email"
+               class="form-control"
+               required>
     </div>
-
 </div>
 
 <div class="col-md-6">
-
     <div class="form-group">
         <label>Servicio</label>
 
         <select name="servicio"
                 class="form-control"
                 required>
+
+            <option value="">Seleccione</option>
 
             {% for s in servicios %}
             <option value="{{ s.id }}">
@@ -193,7 +103,19 @@ $(document).ready(function(){
         </select>
 
     </div>
+</div>
 
+</div>
+
+<div class="row">
+
+<div class="col-md-12">
+    <div class="form-group">
+        <label>Mensaje (opcional)</label>
+        <textarea name="mensaje"
+                  class="form-control"
+                  rows="3"></textarea>
+    </div>
 </div>
 
 </div>
@@ -204,10 +126,10 @@ $(document).ready(function(){
             class="btn btn-success">
 
         <i class="material-icons">
-            event_available
+            send
         </i>
 
-        Agendar Cita
+        Enviar Solicitud
 
     </button>
 
