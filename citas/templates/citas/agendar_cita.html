@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-xl">
+
+<div class="table-wrapper">
+
+<div class="table-title">
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>Agendar <b>Cita</b></h2>
+        </div>
+
+        <div class="col-sm-6 text-right">
+            <a href="#addModal" class="btn btn-success" data-toggle="modal">
+                Nueva Cita
+            </a>
+        </div>
+    </div>
+</div>
+
+<table class="table table-striped">
+<thead>
+<tr>
+    <th>Fecha</th>
+    <th>Hora</th>
+    <th>Barbero</th>
+    <th>Servicio</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for cita in citas %}
+<tr>
+    <td>{{ cita.fecha }}</td>
+    <td>{{ cita.hora }}</td>
+    <td>{{ cita.barbero }}</td>
+    <td>{{ cita.servicio }}</td>
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+</div>
+</div>
+
+{% endblock %}

@@ -447,13 +447,34 @@ def reporte_citas_pdf(request):
     return response
 
 
-from django.http import HttpResponse
 
+
+@login_required
 def agendar_cita(request):
-    return HttpResponse("Pendiente")
+    return render(request, 'citas/agendar_cita.html')
 
+
+@login_required
 def mis_citas(request):
-    return HttpResponse("Pendiente")
+    cliente = Usuario.objects.get(
+        id=request.session['user_id']
+    )
 
+    citas = Cita.objects.filter(cliente=cliente)
+
+    return render(request, 'citas/mis_citas.html', {
+        'citas': citas
+    })
+
+
+@login_required
 def historial_citas(request):
-    return HttpResponse("Pendiente")
+    cliente = Usuario.objects.get(
+        id=request.session['user_id']
+    )
+
+    citas = Cita.objects.filter(cliente=cliente)
+
+    return render(request, 'citas/historial_citas.html', {
+        'citas': citas
+    })

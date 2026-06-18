@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-xl">
+
+<div class="table-wrapper">
+
+<div class="table-title">
+<h2>Mis <b>Citas</b></h2>
+</div>
+
+<table class="table table-striped">
+<thead>
+<tr>
+    <th>Fecha</th>
+    <th>Hora</th>
+    <th>Barbero</th>
+    <th>Servicio</th>
+    <th>Estado</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for cita in citas %}
+<tr>
+    <td>{{ cita.fecha }}</td>
+    <td>{{ cita.hora }}</td>
+    <td>{{ cita.barbero }}</td>
+    <td>{{ cita.servicio }}</td>
+    <td>{{ cita.estado }}</td>
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+</div>
+</div>
+
+{% endblock %}
