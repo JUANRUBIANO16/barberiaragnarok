@@ -274,6 +274,7 @@
 </li>
 {% endif %}
 
+{% if request.session.user_rol != 'cliente' %}
 <!-- Citas -->
 <li class="menu-item">
     <a href="{% url 'citas' %}" class="menu-link">
@@ -281,6 +282,8 @@
         <div>Citas</div>
     </a>
 </li>
+{% endif %}
+
 {% if request.session.user_rol == 'barbero' %}
 <!-- Disponibilidad -->
 <li class="menu-item">
@@ -298,6 +301,36 @@
         <div>Servicios</div>
     </a>
 </li>
+
+{% if request.session.user_rol == 'cliente' %}
+
+<!-- Agendar Cita -->
+<li class="menu-item">
+    <a href="{% url 'agendar_cita' %}" class="menu-link">
+        <i class="menu-icon bx bx-calendar-plus"></i>
+        <div>Agendar Cita</div>
+    </a>
+</li>
+
+<!-- Mis Citas -->
+<li class="menu-item">
+    <a href="{% url 'mis_citas' %}" class="menu-link">
+        <i class="menu-icon bx bx-calendar-check"></i>
+        <div>Mis Citas</div>
+    </a>
+</li>
+
+<!-- Historial -->
+<li class="menu-item">
+    <a href="{% url 'historial_citas' %}" class="menu-link">
+        <i class="menu-icon bx bx-history"></i>
+        <div>Historial de Citas</div>
+    </a>
+</li>
+
+{% endif %}
+
+{% if request.session.user_rol != 'cliente' %}
 
 <!-- Ventas -->
 <li class="menu-item">
@@ -323,6 +356,8 @@
     </a>
 </li>
 
+{% endif %}
+
 <!-- Notificaciones -->
 <li class="menu-item">
     <a href="{% url 'notificaciones' %}" class="menu-link">
@@ -338,7 +373,6 @@
         <div>Salir</div>
     </a>
 </li>
-
 </ul>
 
 </aside>
