@@ -133,7 +133,7 @@ from django.contrib.auth.hashers import make_password
 from usuarios.models import Usuario
 
 
-def registro_cliente(request):
+def register_view(request):
 
     # si ya está logueado
     if request.session.get('user_id'):
