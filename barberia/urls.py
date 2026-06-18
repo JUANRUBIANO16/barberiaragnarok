@@ -28,7 +28,7 @@ urlpatterns =[
     path('servicios/',include('Servicios.urls')),
     path('disponibilidad/',include('disponibilidad.urls')),
     path('citas/',include('citas.urls')),
-    path('tipoPago/',include('tipoPago.url')),
+    path('tipoPago/',include('tipoPago.urls')),
     path('usuarios/',include('usuarios.urls')),
     path('comprobante/',include('comprobante.urls')),
     path('venta/',include('ventas.urls')),
