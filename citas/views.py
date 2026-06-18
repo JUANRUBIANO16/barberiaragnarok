@@ -448,11 +448,13 @@ def reporte_citas_pdf(request):
 
 
 
-
 @login_required
 def agendar_cita(request):
-    return render(request, 'citas/agendar_cita.html')
+    servicios = Servicio.objects.all()
 
+    return render(request, 'citas/agendar_cita.html', {
+        'servicios': servicios
+    })
 
 @login_required
 def mis_citas(request):
