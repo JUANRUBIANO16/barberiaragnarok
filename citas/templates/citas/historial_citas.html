@@ -3,17 +3,156 @@
 
 {% block content %}
 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="{% static 'css/table.css' %}">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<style>
+.dataTables_filter {
+    display: none;
+}
+</style>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(document).ready(function(){
+
+    let table = $('.table').DataTable({
+        paging:true,
+        lengthChange:false,
+        searching:true,
+        ordering:true,
+        info:true,
+        pageLength:5
+    });
+
+    $('#barbero_filter').on('keyup', function(){
+        table.column(3).search(this.value).draw();
+    });
+
+    $('#servicio_filter').on('keyup', function(){
+        table.column(4).search(this.value).draw();
+    });
+
+    $('#estado_filter').on('change', function(){
+        table.column(5).search(this.value).draw();
+    });
+
+    $('#entries').on('change', function(){
+        table.page.len($(this).val()).draw();
+    });
+
+});
+</script>
+
 <div class="container-xl">
 
+{% if messages %}
+
+<div class="mt-3">
+    {% for message in messages %}
+        <div class="alert
+        {% if message.tags == 'error' %}alert-danger
+        {% elif message.tags == 'success' %}alert-success
+        {% elif message.tags == 'warning' %}alert-warning
+        {% else %}alert-info
+        {% endif %}
+        alert-dismissible fade show">
+
+```
+        {{ message }}
+
+        <button type="button" class="close" data-dismiss="alert">
+            <span>&times;</span>
+        </button>
+
+    </div>
+{% endfor %}
+```
+
+</div>
+{% endif %}
+
+<div class="table-responsive">
 <div class="table-wrapper">
 
 <div class="table-title">
-<h2>Historial de <b>Citas</b></h2>
+<div class="row">
+
+<div class="col-sm-6">
+    <h2>Historial de <b>Citas</b></h2>
 </div>
 
-<table class="table table-striped">
+</div>
+</div>
+
+<div class="table-filter mb-2">
+<div class="row">
+
+<div class="col-sm-3">
+    <div class="show-entries">
+        <span>Mostrar</span>
+        <select class="form-control" id="entries">
+            <option>5</option>
+            <option>10</option>
+            <option>15</option>
+            <option>20</option>
+        </select>
+        <span>entradas</span>
+    </div>
+</div>
+
+<div class="col-sm-9 d-flex align-items-center">
+
+```
+<div class="filter-group mr-2">
+    <label>Barbero</label>
+    <input type="text"
+           id="barbero_filter"
+           class="form-control"
+           placeholder="Buscar">
+</div>
+
+<div class="filter-group mr-2">
+    <label>Servicio</label>
+    <input type="text"
+           id="servicio_filter"
+           class="form-control"
+           placeholder="Buscar">
+</div>
+
+<div class="filter-group mr-2">
+    <label>Estado</label>
+    <select id="estado_filter" class="form-control">
+        <option value="">Todos</option>
+        <option value="Pendiente">Pendiente</option>
+        <option value="Confirmada">Confirmada</option>
+        <option value="Completada">Completada</option>
+        <option value="Cancelada">Cancelada</option>
+    </select>
+</div>
+```
+
+</div>
+
+</div>
+</div>
+
+<table class="table table-striped table-hover">
+
 <thead>
 <tr>
+    <th>ID</th>
     <th>Fecha</th>
     <th>Hora</th>
     <th>Barbero</th>
@@ -24,19 +163,63 @@
 
 <tbody>
 
-{% for cita in citas %}
+{% for c in citas %}
+
 <tr>
-    <td>{{ cita.fecha }}</td>
-    <td>{{ cita.hora }}</td>
-    <td>{{ cita.barbero }}</td>
-    <td>{{ cita.servicio }}</td>
-    <td>{{ cita.estado }}</td>
+
+```
+<td>{{ c.id }}</td>
+
+<td>{{ c.fecha }}</td>
+
+<td>{{ c.hora }}</td>
+
+<td>{{ c.barbero.nombre }}</td>
+
+<td>{{ c.servicio.nombre }}</td>
+
+<td>
+
+    {% if c.estado == 'Completada' %}
+        <span class="badge badge-success">
+            {{ c.estado }}
+        </span>
+
+    {% elif c.estado == 'Cancelada' %}
+        <span class="badge badge-danger">
+            {{ c.estado }}
+        </span>
+
+    {% elif c.estado == 'Confirmada' %}
+        <span class="badge badge-primary">
+            {{ c.estado }}
+        </span>
+
+    {% else %}
+        <span class="badge badge-warning">
+            {{ c.estado }}
+        </span>
+    {% endif %}
+
+</td>
+```
+
 </tr>
+{% empty %}
+
+<tr>
+    <td colspan="6" class="text-center">
+        No hay citas registradas
+    </td>
+</tr>
+
 {% endfor %}
 
 </tbody>
+
 </table>
 
+</div>
 </div>
 </div>
 

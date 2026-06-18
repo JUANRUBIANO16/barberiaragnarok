@@ -456,25 +456,33 @@ def agendar_cita(request):
 
 @login_required
 def mis_citas(request):
-    cliente = Usuario.objects.get(
-        id=request.session['user_id']
-    )
+    user_id = request.session.get('user_id')
 
-    citas = Cita.objects.filter(cliente=cliente)
+    citas = Cita.objects.filter(
+        cliente_id=user_id
+    ).select_related(
+        'barbero',
+        'servicio'
+    ).order_by('-fecha', '-hora')
 
     return render(request, 'citas/mis_citas.html', {
         'citas': citas
     })
 
-
 @login_required
 def historial_citas(request):
-    cliente = Usuario.objects.get(
-        id=request.session['user_id']
+
+    user_id = request.session.get('user_id')
+
+    citas = Cita.objects.filter(
+        cliente_id=user_id
+    ).select_related(
+        'barbero',
+        'servicio'
+    ).order_by('-fecha')
+
+    return render(
+        request,
+        'citas/historial_citas.html',
+        {'citas': citas}
     )
-
-    citas = Cita.objects.filter(cliente=cliente)
-
-    return render(request, 'citas/historial_citas.html', {
-        'citas': citas
-    })
