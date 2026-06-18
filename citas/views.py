@@ -449,11 +449,59 @@ def reporte_citas_pdf(request):
 
 
 
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import render
+from Servicios.models import Servicio
+from Barber.models import Barbero
+from .models import SolicitudCita
+
+
 @login_required
 def agendar_cita(request):
-    return render(request, 'citas/agendar_cita.html')
 
+    # 🔵 GET → mostrar formulario
+    if request.method == 'GET':
+        barberos = Barbero.objects.all()
+        servicios = Servicio.objects.all()
 
+        return render(request, 'citas/agendar_cita.html', {
+            'barberos': barberos,
+            'servicios': servicios
+        })
+
+    # 🟢 POST → crear solicitud
+    elif request.method == 'POST':
+
+        nombre = request.POST.get('nombre')
+        telefono = request.POST.get('telefono')
+        email = request.POST.get('email')
+        mensaje = request.POST.get('mensaje')
+        servicio_id = request.POST.get('servicio')
+
+        servicio = None
+        if servicio_id:
+            servicio = Servicio.objects.filter(id=servicio_id).first()
+
+        SolicitudCita.objects.create(
+            nombre=nombre,
+            telefono=telefono,
+            email=email,
+            mensaje=mensaje,
+            servicio=servicio,
+            estado='pendiente'
+        )
+
+        return JsonResponse({
+            "success": True,
+            "message": "Solicitud creada correctamente"
+        })
+
+    # 🔴 método no permitido
+    return JsonResponse({
+        "success": False,
+        "error": "Método no permitido"
+    })
 @login_required
 def mis_citas(request):
     user_id = request.session.get('user_id')
