@@ -457,6 +457,39 @@ def agendar_cita(request):
         'servicios': servicios,
         'usuario': usuario
     })
+
+
+@login_required
+def crear_solicitud_cita(request):
+
+    if request.method == "POST":
+
+        user_id = request.session.get('user_id')
+        usuario = Usuario.objects.filter(id=user_id).first()
+
+        nombre = usuario.nombre if usuario else request.POST.get('nombre')
+        email = usuario.email if usuario else request.POST.get('email')
+
+        telefono = request.POST.get('telefono')
+        mensaje = request.POST.get('mensaje')
+        servicio_id = request.POST.get('servicio')
+
+        servicio = Servicio.objects.filter(id=servicio_id).first()
+
+        SolicitudCita.objects.create(
+            nombre=nombre,
+            telefono=telefono,
+            email=email,
+            mensaje=mensaje,
+            servicio=servicio,
+            estado='pendiente'
+        )
+
+        messages.success(request, "Solicitud enviada correctamente")
+
+        return redirect('mis_citas')
+
+    return redirect('agendar_cita')
 @login_required
 def mis_citas(request):
     cliente = Usuario.objects.get(
