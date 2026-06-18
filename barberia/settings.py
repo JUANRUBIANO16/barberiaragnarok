@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
-# SECURITY
 SECRET_KEY = 'django-insecure-u6d5xx@(h*f@0xf89k85&usj6y3nxnqsh^l@j5dlwbaksa)'
 DEBUG = False
 
@@ -15,16 +14,13 @@ ALLOWED_HOSTS = [
     ".onrender.com"
 ]
 
-# APPS
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
     'django.contrib.staticfiles',
-    'cloudinary',
 
     'usuarios.apps.UsuariosConfig',
     'Barber',
@@ -39,10 +35,8 @@ INSTALLED_APPS = [
     'notificaciones',
 ]
 
-# MIDDLEWARE (CORREGIDO)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,8 +67,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'barberia.wsgi.application'
 
-# DATABAS
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -85,57 +77,22 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT'),
     }
 }
-# STATIC (CORRECTO PARA RENDER)
+
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 STATICFILES_DIRS = [
-    BASE_DIR / "static"
+    BASE_DIR / 'static'
 ]
 
-# MEDIA (local fallback; Cloudinary en producción)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
-def _cloudinary_url():
-    url = os.environ.get('CLOUDINARY_URL')
-    if url:
-        return url
-    cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME')
-    api_key = os.environ.get('CLOUDINARY_API_KEY')
-    api_secret = os.environ.get('CLOUDINARY_API_SECRET')
-    if cloud_name and api_key and api_secret:
-        return f'cloudinary://{api_key}:{api_secret}@{cloud_name}'
-    return None
-
-
-_cloudinary = _cloudinary_url()
-USE_CLOUDINARY = bool(_cloudinary)
-
-if USE_CLOUDINARY:
-    os.environ['CLOUDINARY_URL'] = _cloudinary
-    import cloudinary
-    cloudinary.config(secure=True)
-
-STORAGES = {
-    'default': {
-        'BACKEND': (
-            'cloudinary_storage.storage.MediaCloudinaryStorage'
-            if USE_CLOUDINARY
-            else 'django.core.files.storage.FileSystemStorage'
-        ),
-    },
-    'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
-    },
-}
-# TIME
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'America/Bogota'
 USE_I18N = True
 USE_TZ = True
 
-# EMAIL
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -148,3 +105,5 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 TWILIO_SID = os.getenv("TWILIO_SID")
 TWILIO_TOKEN = os.getenv("TWILIO_TOKEN")
 TWILIO_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
