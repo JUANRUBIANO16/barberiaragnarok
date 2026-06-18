@@ -294,6 +294,8 @@
 </li>
 {% endif %}
 
+
+{% if request.session.user_rol == '!cliente' %}
 <!-- Servicios -->
 <li class="menu-item">
     <a href="{% url 'listar_servicios' %}" class="menu-link">
@@ -301,6 +303,7 @@
         <div>Servicios</div>
     </a>
 </li>
+{% endif %}
 
 {% if request.session.user_rol == 'cliente' %}
 
