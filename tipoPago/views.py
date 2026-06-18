@@ -9,7 +9,7 @@ from barberia.decorators import login_required, role_required
 def tipoPago(request):
     tipopagos = TipoPago.objects.all()
     return render(request, 'tipoPago.html', {
-        'tipopago': tipopagos
+        'tipoPago': tipopagos
     })
 
 
