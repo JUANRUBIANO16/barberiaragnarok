@@ -129,7 +129,6 @@ STORAGES = {
         'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
     },
 }
-
 # TIME
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'America/Bogota'
