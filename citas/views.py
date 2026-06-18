@@ -11,6 +11,7 @@ from disponibilidad.models import Disponibilidad
 from barberia.decorators import login_required
 from django.db.models import Count, Sum
 from barberia.decorators import role_required
+from notificaciones.models import SolicitudCita
 
 def validar_fecha_hora(fecha, hora):
     if not fecha or not hora:
