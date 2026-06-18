@@ -445,3 +445,15 @@ def reporte_citas_pdf(request):
 
     pisa.CreatePDF(html, dest=response)
     return response
+
+
+from django.http import HttpResponse
+
+def agendar_cita(request):
+    return HttpResponse("Pendiente")
+
+def mis_citas(request):
+    return HttpResponse("Pendiente")
+
+def historial_citas(request):
+    return HttpResponse("Pendiente")
