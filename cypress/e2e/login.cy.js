@@ -2,7 +2,7 @@ describe('Login', () => {
 
   it('login correcto', () => {
 
-    cy.visit('/login');
+    cy.visit('/');
 
     cy.get('#email').type('admin@correo.com');
     cy.get('#password').type('123456');
