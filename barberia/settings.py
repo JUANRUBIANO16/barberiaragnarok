@@ -13,7 +13,7 @@ load_dotenv()
 # CORE DJANGO
 # =========================
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-fallback-only")
-DEBUG = False  # 👈 en Render debe ser False
+DEBUG = True  # 👈 en Render debe ser False
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
