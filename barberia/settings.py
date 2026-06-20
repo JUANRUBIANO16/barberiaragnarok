@@ -3,8 +3,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 
 # =========================
 # BASE
@@ -17,7 +15,7 @@ load_dotenv()
 # =========================
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-fallback-only")
 
-DEBUG = False  # 🔥 EN PRODUCCIÓN SIEMPRE FALSE
+DEBUG = False  # producción
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
@@ -93,7 +91,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'barberia.wsgi.application'
 
 # =========================
-# DATABASE (POSTGRES RENDER)
+# DATABASE (RENDER POSTGRES)
 # =========================
 DATABASES = {
     'default': {
@@ -130,15 +128,6 @@ CLOUDINARY_STORAGE = {
 }
 
 # =========================
-# INTERNATIONALIZATION
-# =========================
-LANGUAGE_CODE = 'es-es'
-TIME_ZONE = 'America/Bogota'
-
-USE_I18N = True
-USE_TZ = True
-
-# =========================
 # EMAIL (SENDGRID SMTP)
 # =========================
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -160,6 +149,6 @@ TWILIO_TOKEN = os.getenv("TWILIO_TOKEN")
 TWILIO_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
 
 # =========================
-# DEFAULT AUTO FIELD
+# AUTO FIELD
 # =========================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
