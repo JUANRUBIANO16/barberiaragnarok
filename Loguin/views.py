@@ -2,20 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
 from django.utils import timezone
-from django.core.mail import send_mail
 from django.contrib.auth.hashers import check_password, make_password
 
-from usuarios.models import Usuario
-import uuid
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.conf import settings
 from usuarios.models import Usuario
 import uuid
 
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-
 
 
 # =========================
@@ -82,8 +75,8 @@ def recuperar_password(request):
         try:
             user = Usuario.objects.get(email=email)
 
-            # token
-            user.reset_token = uuid.uuid4()
+            # token reset
+            user.reset_token = str(uuid.uuid4())
             user.save()
 
             link = request.build_absolute_uri(
@@ -97,11 +90,12 @@ def recuperar_password(request):
                 html_content=f"""
                     <h3>Hola {user.nombre}</h3>
                     <p>Solicitaste recuperar contraseña</p>
+                    <p>Haz clic en el siguiente enlace:</p>
                     <a href="{link}">Resetear contraseña</a>
                 """
             )
 
-            sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+            sg = SendGridAPIClient(settings.EMAIL_HOST_PASSWORD)
             sg.send(message)
 
             messages.success(request, "Correo enviado correctamente")
@@ -115,6 +109,7 @@ def recuperar_password(request):
             messages.error(request, "Error enviando correo")
 
     return render(request, 'recuperar_password.html')
+
 
 # =========================
 # RESET PASSWORD
@@ -154,7 +149,6 @@ def reset_password(request, token):
 # REGISTER
 # =========================
 def register_view(request):
-
     if request.session.get('user_id'):
         return redirect('dashboard')
 
