@@ -2,20 +2,14 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-import cloudinary
-
-# =========================
-# BASE
-# =========================
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
 # =========================
-# CORE DJANGO
+# CORE
 # =========================
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-fallback-only")
-
-DEBUG = False  # producción
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
@@ -68,30 +62,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'barberia.urls'
 
-# =========================
-# TEMPLATES
-# =========================
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'usuarios.context_processors.usuario_actual',
-            ],
-        },
-    },
-]
-
 WSGI_APPLICATION = 'barberia.wsgi.application'
 
 # =========================
-# DATABASE (RENDER POSTGRES)
+# DATABASE
 # =========================
 DATABASES = {
     'default': {
@@ -105,7 +79,7 @@ DATABASES = {
 }
 
 # =========================
-# STATIC FILES
+# STATIC
 # =========================
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -117,7 +91,7 @@ STATICFILES_DIRS = [
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # =========================
-# MEDIA (CLOUDINARY)
+# CLOUDINARY
 # =========================
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
@@ -128,7 +102,7 @@ CLOUDINARY_STORAGE = {
 }
 
 # =========================
-# EMAIL (SENDGRID SMTP)
+# EMAIL (SENDGRID)
 # =========================
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
@@ -141,6 +115,18 @@ EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_API_KEY")
 
 DEFAULT_FROM_EMAIL = "ragnarockbarber@gmail.com"
 
+# 🔥 IMPORTANTE: también lo usamos para la API
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+
+# =========================
+# TIMEZONE
+# =========================
+LANGUAGE_CODE = 'es-es'
+TIME_ZONE = 'America/Bogota'
+
+USE_I18N = True
+USE_TZ = True
+
 # =========================
 # TWILIO
 # =========================
@@ -148,7 +134,4 @@ TWILIO_SID = os.getenv("TWILIO_SID")
 TWILIO_TOKEN = os.getenv("TWILIO_TOKEN")
 TWILIO_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
 
-# =========================
-# AUTO FIELD
-# =========================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

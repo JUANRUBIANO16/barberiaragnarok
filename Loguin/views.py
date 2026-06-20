@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.hashers import check_password, make_password
+from django.conf import settings
 
 from usuarios.models import Usuario
 import uuid
@@ -48,7 +48,7 @@ def login_view(request):
 
         except Exception as e:
             print("LOGIN ERROR:", e)
-            messages.error(request, "Error interno del servidor")
+            messages.error(request, "Error interno")
 
     return render(request, "loguin.html")
 
@@ -75,7 +75,7 @@ def recuperar_password(request):
         try:
             user = Usuario.objects.get(email=email)
 
-            # token reset
+            # token
             user.reset_token = str(uuid.uuid4())
             user.save()
 
@@ -84,18 +84,17 @@ def recuperar_password(request):
             )
 
             message = Mail(
-                from_email='ragnarockbarber@gmail.com',
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 to_emails=email,
                 subject='Recuperar contraseña - Ragnarok Barber',
                 html_content=f"""
                     <h3>Hola {user.nombre}</h3>
                     <p>Solicitaste recuperar contraseña</p>
-                    <p>Haz clic en el siguiente enlace:</p>
                     <a href="{link}">Resetear contraseña</a>
                 """
             )
 
-            sg = SendGridAPIClient(settings.EMAIL_HOST_PASSWORD)
+            sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
             sg.send(message)
 
             messages.success(request, "Correo enviado correctamente")
@@ -143,7 +142,6 @@ def reset_password(request, token):
             return redirect('loguin')
 
     return render(request, 'reset_password.html')
-
 
 # =========================
 # REGISTER
