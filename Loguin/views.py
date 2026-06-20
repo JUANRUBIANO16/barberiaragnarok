@@ -1,12 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from usuarios.models import Usuario
-from django.contrib.auth.hashers import check_password, make_password
-from django.core.mail import send_mail
+from django.conf import settings
 from django.utils import timezone
+from django.core.mail import send_mail
+from django.contrib.auth.hashers import check_password, make_password
+
+from usuarios.models import Usuario
 import uuid
 
 
+# =========================
+# LOGIN
+# =========================
 def login_view(request):
     if request.session.get('user_id'):
         return redirect('dashboard')
@@ -24,9 +29,8 @@ def login_view(request):
 
             if check_password(password, user.password):
 
-                if hasattr(user, "last_login"):
-                    user.last_login = timezone.now()
-                    user.save()
+                user.last_login = timezone.now()
+                user.save()
 
                 request.session['user_id'] = user.id
                 request.session['user_nombre'] = user.nombre
@@ -47,11 +51,17 @@ def login_view(request):
     return render(request, "loguin.html")
 
 
+# =========================
+# LOGOUT
+# =========================
 def logout_view(request):
     request.session.flush()
     return redirect('loguin')
 
 
+# =========================
+# RECUPERAR CONTRASEÑA
+# =========================
 def recuperar_password(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -63,24 +73,32 @@ def recuperar_password(request):
         try:
             user = Usuario.objects.get(email=email)
 
+            # generar token
             user.reset_token = uuid.uuid4()
             user.save()
 
-            link = request.build_absolute_uri(f"/reset/{user.reset_token}/")
+            link = request.build_absolute_uri(
+                f"/reset/{user.reset_token}/"
+            )
 
             send_mail(
                 subject='Recuperar contraseña - Ragnarok Barber',
-                message=(
-                    f"Hola {user.nombre},\n\n"
-                    f"Entra aquí para cambiar tu contraseña:\n{link}\n\n"
-                    f"Si no fuiste tú, ignora este mensaje."
-                ),
-                from_email='soporte.rubianobarber@gmail.com',
+                message=f"""
+Hola {user.nombre},
+
+Solicitaste recuperar tu contraseña.
+
+Entra aquí para cambiarla:
+{link}
+
+Si no fuiste tú, ignora este mensaje.
+""",
+                from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
                 fail_silently=False,
             )
 
-            messages.success(request, "Correo enviado")
+            messages.success(request, "Correo enviado correctamente")
             return redirect('loguin')
 
         except Usuario.DoesNotExist:
@@ -93,10 +111,12 @@ def recuperar_password(request):
     return render(request, 'recuperar_password.html')
 
 
+# =========================
+# RESET PASSWORD
+# =========================
 def reset_password(request, token):
     try:
         user = Usuario.objects.get(reset_token=token)
-
     except Usuario.DoesNotExist:
         messages.error(request, "Link inválido o expirado")
         return redirect('loguin')
@@ -125,17 +145,11 @@ def reset_password(request, token):
     return render(request, 'reset_password.html')
 
 
-
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth.hashers import make_password
-from usuarios.models import Usuario
-
-
+# =========================
+# REGISTER
+# =========================
 def register_view(request):
 
-    # si ya está logueado
     if request.session.get('user_id'):
         return redirect('dashboard')
 
