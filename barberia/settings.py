@@ -6,6 +6,9 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
+# =========================
+# BASE
+# =========================
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
@@ -13,7 +16,8 @@ load_dotenv()
 # CORE DJANGO
 # =========================
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-fallback-only")
-DEBUG = True  # 👈 en Render debe ser False
+
+DEBUG = False  # 🔥 EN PRODUCCIÓN SIEMPRE FALSE
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
@@ -89,7 +93,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'barberia.wsgi.application'
 
 # =========================
-# DATABASE (Render Postgres)
+# DATABASE (POSTGRES RENDER)
 # =========================
 DATABASES = {
     'default': {
@@ -103,7 +107,7 @@ DATABASES = {
 }
 
 # =========================
-# STATIC
+# STATIC FILES
 # =========================
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -115,7 +119,7 @@ STATICFILES_DIRS = [
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # =========================
-# CLOUDINARY
+# MEDIA (CLOUDINARY)
 # =========================
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
@@ -126,7 +130,7 @@ CLOUDINARY_STORAGE = {
 }
 
 # =========================
-# LOCALIZATION
+# INTERNATIONALIZATION
 # =========================
 LANGUAGE_CODE = 'es-es'
 TIME_ZONE = 'America/Bogota'
@@ -135,8 +139,9 @@ USE_I18N = True
 USE_TZ = True
 
 # =========================
-# EMAIL (SENDGRID API - CORRECTO PARA RENDER)
-# =========================EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL (SENDGRID SMTP)
+# =========================
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 EMAIL_HOST = "smtp.sendgrid.net"
 EMAIL_PORT = 587
@@ -146,6 +151,7 @@ EMAIL_HOST_USER = "apikey"
 EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_API_KEY")
 
 DEFAULT_FROM_EMAIL = "ragnarockbarber@gmail.com"
+
 # =========================
 # TWILIO
 # =========================
@@ -154,6 +160,6 @@ TWILIO_TOKEN = os.getenv("TWILIO_TOKEN")
 TWILIO_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
 
 # =========================
-# AUTO FIELD
+# DEFAULT AUTO FIELD
 # =========================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
