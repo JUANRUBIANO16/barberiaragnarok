@@ -7,6 +7,15 @@ from django.contrib.auth.hashers import check_password, make_password
 
 from usuarios.models import Usuario
 import uuid
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.conf import settings
+from usuarios.models import Usuario
+import uuid
+
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
 
 
 # =========================
@@ -73,7 +82,7 @@ def recuperar_password(request):
         try:
             user = Usuario.objects.get(email=email)
 
-            # generar token
+            # token
             user.reset_token = uuid.uuid4()
             user.save()
 
@@ -81,22 +90,19 @@ def recuperar_password(request):
                 f"/reset/{user.reset_token}/"
             )
 
-            send_mail(
+            message = Mail(
+                from_email='ragnarockbarber@gmail.com',
+                to_emails=email,
                 subject='Recuperar contraseña - Ragnarok Barber',
-                message=f"""
-Hola {user.nombre},
-
-Solicitaste recuperar tu contraseña.
-
-Entra aquí para cambiarla:
-{link}
-
-Si no fuiste tú, ignora este mensaje.
-""",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[email],
-                fail_silently=False,
+                html_content=f"""
+                    <h3>Hola {user.nombre}</h3>
+                    <p>Solicitaste recuperar contraseña</p>
+                    <a href="{link}">Resetear contraseña</a>
+                """
             )
+
+            sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+            sg.send(message)
 
             messages.success(request, "Correo enviado correctamente")
             return redirect('loguin')
@@ -109,7 +115,6 @@ Si no fuiste tú, ignora este mensaje.
             messages.error(request, "Error enviando correo")
 
     return render(request, 'recuperar_password.html')
-
 
 # =========================
 # RESET PASSWORD
