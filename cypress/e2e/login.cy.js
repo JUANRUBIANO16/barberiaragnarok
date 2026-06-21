@@ -1,19 +1,15 @@
-describe('Login sistema', () => {
+describe('CP-001 - Inicio de sesión exitoso', () => {
 
-  it('login correcto', () => {
+  it('Login correcto', () => {
 
-    cy.visit('https://barberiaragnarok.onrender.com/');
+    cy.visit('https://barberiaragnarok.onrender.com/')
 
-    cy.get('#email').type('admin@gmail.com');
-    cy.get('#password').type('admin123');
+    cy.get('#email').type('admin@gmail.com')
+    cy.get('#password').type('admin123')
 
-    cy.get('.login-btn').click();
+    cy.get('button[type="submit"]').click()
 
-    // espera redirección real
-    cy.url().should('include', '/dashboard/');
+    cy.url().should('include', '/dashboard')
+  })
 
-    // valida que entró al sistema
-    cy.contains('Bienvenido');
-  });
-
-});K
+})

@@ -95,7 +95,7 @@ $(document).ready(function () {
 
         <div class="col-sm-8 text-right">
 
-            {% if user.role == 'admin' %}
+           {% if request.session.user_rol == 'admin' %}
             <a href="#addEmployeeModal" class="btn btn-primary" data-toggle="modal">
                 <i class="material-icons">&#xE863;</i> Agregar Servicios
             </a>
