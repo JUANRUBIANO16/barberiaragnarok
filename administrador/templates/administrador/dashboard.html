@@ -216,6 +216,8 @@
 </div>
 {% endif %}
 
+{% if request.session.user_rol != 'cliente' %}
+
 <!-- ===================== GRAFICAS ===================== -->
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -245,5 +247,7 @@ new Chart(document.getElementById('paymentChart'), {
     data: { labels: labelsMetodo, datasets: [{ data: dataMetodo }] }
 });
 </script>
+
+{% endif %}
 
 {% endblock %}
