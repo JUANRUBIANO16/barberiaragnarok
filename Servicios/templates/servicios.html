@@ -200,35 +200,50 @@ $(document).ready(function () {
 <!-- EDIT MODALS -->
 {% if request.session.user_rol == 'admin' %}
 {% for s in servicios %}
+
 <div id="editEmployeeModal{{ s.id }}" class="modal fade">
-<div class="modal-dialog">
-<div class="modal-content">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-<form method="POST" action="{% url 'editar_servicios' s.id %}">
-{% csrf_token %}
+      <form method="POST" action="{% url 'editar_servicios' s.id %}">
+        {% csrf_token %}
 
-<div class="modal-header">
-    <h4>Editar Servicio</h4>
+        <div class="modal-header">
+            <h4>Editar Servicio</h4>
+        </div>
+
+        <div class="modal-body">
+
+            <!-- NOMBRE -->
+            <input type="text"
+                   name="nombre"
+                   value="{{ s.nombre }}"
+                   class="form-control">
+
+            <!-- PRECIO (ESTO TE FALTABA BIEN HECHO) -->
+            <input type="number"
+                   name="precio"
+                   value="{{ s.precio }}"
+                   class="form-control mt-2">
+
+            <!-- DESCRIPCIÓN -->
+            <textarea name="descripcion"
+                      class="form-control mt-2">{{ s.descripcion }}</textarea>
+
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-info">Guardar</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
 </div>
 
-<div class="modal-body">
-    <input type="text" name="nombre" value="{{ s.nombre }}" class="form-control">
-    <input type="number" name="precio" value="{{ s.precio }}" class="form-control mt-2">
-    <textarea name="descripcion" class="form-control mt-2">{{ s.descripcion }}</textarea>
-</div>
-
-<div class="modal-footer">
-    <button class="btn btn-info">Guardar</button>
-</div>
-
-</form>
-
-</div>
-</div>
-</div>
 {% endfor %}
 {% endif %}
-
 <!-- DELETE MODALS -->
 {% if request.session.user_rol == 'admin' %}
 {% for s in servicios %}
