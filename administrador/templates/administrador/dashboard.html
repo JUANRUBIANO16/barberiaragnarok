@@ -222,7 +222,7 @@
 {% endif %}
 
 <!-- ===================== GRAFICAS ===================== -->
-{% if request.session.user_rol != 'cliente' %}
+{% if request.session.user_rol != 'cliente' and request.session.user_rol != 'barbero' %}
 
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
