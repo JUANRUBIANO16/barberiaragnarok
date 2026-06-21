@@ -75,7 +75,6 @@ def recuperar_password(request):
         try:
             user = Usuario.objects.get(email=email)
 
-            # token
             user.reset_token = str(uuid.uuid4())
             user.save()
 
@@ -89,12 +88,12 @@ def recuperar_password(request):
                 subject='Recuperar contraseña - Ragnarok Barber',
                 html_content=f"""
                     <h3>Hola {user.nombre}</h3>
-                    <p>Solicitaste recuperar contraseña</p>
+                    <p>Haz clic para resetear contraseña</p>
                     <a href="{link}">Resetear contraseña</a>
                 """
             )
 
-            sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+            sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))  # ✔️ CORRECTO
             sg.send(message)
 
             messages.success(request, "Correo enviado correctamente")
@@ -108,8 +107,6 @@ def recuperar_password(request):
             messages.error(request, "Error enviando correo")
 
     return render(request, 'recuperar_password.html')
-
-
 # =========================
 # RESET PASSWORD
 # =========================
