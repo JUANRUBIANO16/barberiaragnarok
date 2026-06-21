@@ -12,20 +12,19 @@
 
 <style>
     #sidebar {
-        transition: width 0.3s ease, transform 0.3s ease;
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
     }
 
     .sidebar-mini { width: 72px !important; }
 
     .sidebar-mini .sidebar-text,
     .sidebar-mini .sidebar-profile-details,
-    .sidebar-mini .mdi-chevron-down {
-        display: none;
-    }
+    .sidebar-mini .mdi-chevron-down { display: none; }
 
     .sidebar-mini .nav-link {
         justify-content: center;
-        padding: 0;
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .sidebar-mini .nav-link i {
@@ -44,31 +43,55 @@
     Bienvenido, {{ request.session.user_nombre }}
 </div>
 
+
+
 <!-- ======================= MODULOS COMPARTIDOS ======================= -->
+
 {% if request.session.user_rol != 'cliente' %}
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
     {% if request.session.user_rol == 'admin' %}
     <a href="{% url 'usuarios' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-sm font-bold text-gray-500">Total usuarios</p>
-            <h2 class="text-3xl font-bold">{{ total_usuarios }}</h2>
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Total usuarios</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mt-1">{{ total_usuarios }}</h2>
+                </div>
+                <div class="bg-purple-100 p-4 rounded-xl text-purple-600">
+                    <i class="mdi mdi-account-group text-3xl"></i>
+                </div>
+            </div>
         </div>
     </a>
     {% endif %}
 
     <a href="{% url 'listar_servicios' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-sm font-bold text-gray-500">Total servicios</p>
-            <h2 class="text-3xl font-bold">{{ total_servicios }}</h2>
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Total servicios</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mt-1">{{ total_servicios }}</h2>
+                </div>
+                <div class="bg-orange-100 p-4 rounded-xl text-orange-600">
+                    <i class="mdi mdi-package-variant-closed text-3xl"></i>
+                </div>
+            </div>
         </div>
     </a>
 
     <a href="{% url 'comprobantes' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-sm font-bold text-gray-500">Comprobantes</p>
-            <h2 class="text-3xl font-bold">{{ total_comprobantes }}</h2>
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Comprobantes</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mt-1">{{ total_comprobantes }}</h2>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-xl text-blue-600">
+                    <i class="mdi mdi-receipt-text text-3xl"></i>
+                </div>
+            </div>
         </div>
     </a>
 
@@ -80,17 +103,27 @@
 {% if request.session.user_rol == 'admin' %}
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 
-    <a href="{% url 'ventas' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm">
-            <p class="text-sm text-gray-500">Ventas de hoy</p>
-            <h2 class="text-3xl font-bold">{{ ventas_totales }}</h2>
+    <a href="{% url 'ventas' %}" class="group h-full">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm font-bold text-gray-500 uppercase">Ventas de hoy</p>
+                    <h2 class="text-3xl font-bold text-gray-800">{{ ventas_totales }}</h2>
+                </div>
+                <i class="mdi mdi-cash-register text-4xl text-green-600"></i>
+            </div>
         </div>
     </a>
 
-    <a href="{% url 'ventas' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm">
-            <p class="text-sm text-gray-500">Total ventas</p>
-            <h2 class="text-3xl font-bold">${{ dinero_total|floatformat:2 }}</h2>
+    <a href="{% url 'ventas' %}" class="group h-full">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm font-bold text-gray-500 uppercase">Total ventas</p>
+                    <h2 class="text-3xl font-bold text-gray-800">${{ dinero_total|floatformat:2 }}</h2>
+                </div>
+                <i class="mdi mdi-cash-multiple text-4xl text-green-600"></i>
+            </div>
         </div>
     </a>
 
@@ -101,25 +134,39 @@
 {% if request.session.user_rol == 'barbero' %}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
-    <a href="{% url 'citas' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm">
-            <p class="text-sm text-gray-500">Mis citas hoy</p>
-            <h2 class="text-3xl font-bold">{{ mis_citas_hoy }}</h2>
+    <a href="{% url 'citas' %}" class="group h-full">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm font-bold text-gray-500 uppercase">Mis citas hoy</p>
+                    <h2 class="text-3xl font-bold text-gray-800">{{ mis_citas_hoy }}</h2>
+                </div>
+                <i class="mdi mdi-calendar-clock text-4xl text-blue-600"></i>
+            </div>
         </div>
     </a>
 
-    <!-- 🔥 CAMBIO IMPORTANTE -->
-    <a href="{% url 'ventas' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm">
-            <p class="text-sm text-gray-500">Mis ventas</p>
-            <h2 class="text-3xl font-bold">{{ mis_ventas_hoy }}</h2>
+    <a href="{% url 'ventas' %}" class="group h-full">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm font-bold text-gray-500 uppercase">Mis ventas hoy</p>
+                    <h2 class="text-3xl font-bold text-gray-800">{{ mis_ventas_hoy }}</h2>
+                </div>
+                <i class="mdi mdi-cash text-4xl text-green-600"></i>
+            </div>
         </div>
     </a>
 
-    <a href="{% url 'comprobantes' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm">
-            <p class="text-sm text-gray-500">Mis comprobantes</p>
-            <h2 class="text-3xl font-bold">${{ mi_total_mes|floatformat:2 }}</h2>
+    <a href="{% url 'ventas' %}" class="group h-full">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm font-bold text-gray-500 uppercase">Total mes</p>
+                    <h2 class="text-3xl font-bold text-gray-800">${{ mi_total_mes|floatformat:2 }}</h2>
+                </div>
+                <i class="mdi mdi-chart-line text-4xl text-purple-600"></i>
+            </div>
         </div>
     </a>
 
@@ -130,36 +177,54 @@
 {% if request.session.user_rol == 'cliente' %}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
-    <a href="{% url 'agendar_cita' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm">
-            <p>Agendar cita</p>
+    <a href="{% url 'agendar_cita' %}" class="group h-full">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm font-bold text-gray-500 uppercase">Agendar cita</p>
+                    <h2 class="text-3xl font-bold text-gray-800">—</h2>
+                </div>
+                <i class="mdi mdi-calendar-plus text-4xl text-blue-600"></i>
+            </div>
         </div>
     </a>
 
-    <a href="{% url 'mis_citas' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm">
-            <p>Mis citas</p>
+    <a href="{% url 'mis_citas' %}" class="group h-full">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm font-bold text-gray-500 uppercase">Mis citas</p>
+                    <h2 class="text-3xl font-bold text-gray-800">—</h2>
+                </div>
+                <i class="mdi mdi-calendar-check text-4xl text-green-600"></i>
+            </div>
         </div>
     </a>
 
-    <a href="{% url 'historial_citas' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm">
-            <p>Historial</p>
+    <a href="{% url 'historial_citas' %}" class="group h-full">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-sm font-bold text-gray-500 uppercase">Historial</p>
+                    <h2 class="text-3xl font-bold text-gray-800">—</h2>
+                </div>
+                <i class="mdi mdi-history text-4xl text-purple-600"></i>
+            </div>
         </div>
     </a>
 
 </div>
 {% endif %}
 
-<!-- ===================== GRAFICAS ===================== -->
 {% if request.session.user_rol != 'cliente' %}
 
+<!-- ===================== GRAFICAS ===================== -->
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-    <div class="bg-white p-6 rounded-2xl shadow-sm">
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <canvas id="myChart"></canvas>
     </div>
 
-    <div class="bg-white p-6 rounded-2xl shadow-sm">
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <canvas id="paymentChart"></canvas>
     </div>
 </div>
