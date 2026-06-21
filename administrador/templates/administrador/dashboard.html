@@ -11,40 +11,40 @@
 <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
 
 <style>
-#sidebar {
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease;
-}
+    #sidebar {
+        transition: width 0.3s ease, transform 0.3s ease;
+    }
 
-.sidebar-mini { width: 72px !important; }
+    .sidebar-mini { width: 72px !important; }
 
-.sidebar-mini .sidebar-text,
-.sidebar-mini .sidebar-profile-details,
-.sidebar-mini .mdi-chevron-down { display: none; }
+    .sidebar-mini .sidebar-text,
+    .sidebar-mini .sidebar-profile-details,
+    .sidebar-mini .mdi-chevron-down {
+        display: none;
+    }
 
-.sidebar-mini .nav-link {
-    justify-content: center;
-    padding-left: 0;
-    padding-right: 0;
-}
+    .sidebar-mini .nav-link {
+        justify-content: center;
+        padding: 0;
+    }
 
-.sidebar-mini .nav-link i {
-    margin-right: 0;
-    font-size: 1.5rem;
-}
+    .sidebar-mini .nav-link i {
+        margin-right: 0;
+        font-size: 1.5rem;
+    }
 
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #334155;
-    border-radius: 10px;
-}
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 10px;
+    }
 </style>
 
 <div class="font-semibold text-gray-700 text-2xl mb-6">
     Bienvenido, {{ request.session.user_nombre }}
 </div>
 
-<!-- ================= MODULOS COMPARTIDOS ================= -->
-
+<!-- ======================= MODULOS COMPARTIDOS ======================= -->
 {% if request.session.user_rol != 'cliente' %}
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -52,7 +52,7 @@
     {% if request.session.user_rol == 'admin' %}
     <a href="{% url 'usuarios' %}" class="group h-full">
         <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-sm font-bold text-gray-500 uppercase">Total usuarios</p>
+            <p class="text-sm font-bold text-gray-500">Total usuarios</p>
             <h2 class="text-3xl font-bold">{{ total_usuarios }}</h2>
         </div>
     </a>
@@ -60,20 +60,14 @@
 
     <a href="{% url 'listar_servicios' %}" class="group h-full">
         <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-sm font-bold text-gray-500 uppercase">Total servicios</p>
+            <p class="text-sm font-bold text-gray-500">Total servicios</p>
             <h2 class="text-3xl font-bold">{{ total_servicios }}</h2>
         </div>
     </a>
 
     <a href="{% url 'comprobantes' %}" class="group h-full">
         <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-sm font-bold text-gray-500 uppercase">
-                {% if request.session.user_rol == 'barbero' %}
-                    Mis comprobantes
-                {% else %}
-                    Comprobantes
-                {% endif %}
-            </p>
+            <p class="text-sm font-bold text-gray-500">Comprobantes</p>
             <h2 class="text-3xl font-bold">{{ total_comprobantes }}</h2>
         </div>
     </a>
@@ -82,96 +76,92 @@
 
 {% endif %}
 
-<!-- ================= ADMIN ================= -->
-
+<!-- ===================== ADMIN ===================== -->
 {% if request.session.user_rol == 'admin' %}
-
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 
-    <a href="{% url 'ventas' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-sm font-bold text-gray-500 uppercase">Ventas de hoy</p>
+    <a href="{% url 'ventas' %}">
+        <div class="bg-white p-6 rounded-2xl shadow-sm">
+            <p class="text-sm text-gray-500">Ventas de hoy</p>
             <h2 class="text-3xl font-bold">{{ ventas_totales }}</h2>
         </div>
     </a>
 
-    <a href="{% url 'ventas' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-sm font-bold text-gray-500 uppercase">Total ventas</p>
+    <a href="{% url 'ventas' %}">
+        <div class="bg-white p-6 rounded-2xl shadow-sm">
+            <p class="text-sm text-gray-500">Total ventas</p>
             <h2 class="text-3xl font-bold">${{ dinero_total|floatformat:2 }}</h2>
         </div>
     </a>
 
 </div>
-
 {% endif %}
 
-<!-- ================= BARBERO ================= -->
-
+<!-- ===================== BARBERO ===================== -->
 {% if request.session.user_rol == 'barbero' %}
-
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
     <a href="{% url 'citas' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border">
-            <p class="text-sm font-bold text-gray-500 uppercase">Mis citas hoy</p>
+        <div class="bg-white p-6 rounded-2xl shadow-sm">
+            <p class="text-sm text-gray-500">Mis citas hoy</p>
             <h2 class="text-3xl font-bold">{{ mis_citas_hoy }}</h2>
         </div>
     </a>
 
+    <!-- 🔥 CAMBIO IMPORTANTE -->
     <a href="{% url 'ventas' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border">
-            <p class="text-sm font-bold text-gray-500 uppercase">Mis ventas hoy</p>
+        <div class="bg-white p-6 rounded-2xl shadow-sm">
+            <p class="text-sm text-gray-500">Mis ventas</p>
             <h2 class="text-3xl font-bold">{{ mis_ventas_hoy }}</h2>
         </div>
     </a>
 
-    <a href="{% url 'ventas' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border">
-            <p class="text-sm font-bold text-gray-500 uppercase">Total mes</p>
+    <a href="{% url 'comprobantes' %}">
+        <div class="bg-white p-6 rounded-2xl shadow-sm">
+            <p class="text-sm text-gray-500">Mis comprobantes</p>
             <h2 class="text-3xl font-bold">${{ mi_total_mes|floatformat:2 }}</h2>
         </div>
     </a>
 
 </div>
-
 {% endif %}
 
-<!-- ================= CLIENTE ================= -->
-
+<!-- ===================== CLIENTE ===================== -->
 {% if request.session.user_rol == 'cliente' %}
-
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
     <a href="{% url 'agendar_cita' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border">
-            <p class="text-sm font-bold text-gray-500 uppercase">Agendar cita</p>
+        <div class="bg-white p-6 rounded-2xl shadow-sm">
+            <p>Agendar cita</p>
         </div>
     </a>
 
     <a href="{% url 'mis_citas' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border">
-            <p class="text-sm font-bold text-gray-500 uppercase">Mis citas</p>
+        <div class="bg-white p-6 rounded-2xl shadow-sm">
+            <p>Mis citas</p>
         </div>
     </a>
 
     <a href="{% url 'historial_citas' %}">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border">
-            <p class="text-sm font-bold text-gray-500 uppercase">Historial</p>
+        <div class="bg-white p-6 rounded-2xl shadow-sm">
+            <p>Historial</p>
         </div>
     </a>
 
 </div>
-
 {% endif %}
 
-<!-- ================= GRAFICAS ================= -->
-
+<!-- ===================== GRAFICAS ===================== -->
 {% if request.session.user_rol != 'cliente' %}
 
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-    <canvas id="myChart"></canvas>
-    <canvas id="paymentChart"></canvas>
+    <div class="bg-white p-6 rounded-2xl shadow-sm">
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow-sm">
+        <canvas id="paymentChart"></canvas>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
