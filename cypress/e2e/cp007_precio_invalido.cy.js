@@ -2,42 +2,32 @@ describe('CP-007 - Precio inválido en servicios', () => {
 
   it('Debe bloquear creación con precio inválido', () => {
 
-    // LOGIN reutilizable
     cy.login();
 
-    // ir módulo
     cy.visit('/servicios/');
 
-    // abrir modal de forma estable (NO texto)
-    cy.get('a[href="#addEmployeeModal"]')
-      .should('exist')
-      .click({ force: true });
-
-    // asegurar modal abierto
-    cy.get('#addEmployeeModal')
+    // abrir modal (FIABLE)
+    cy.get('[data-cy="btn-open-servicio"]')
       .should('be.visible')
-      .within(() => {
+      .click();
 
-        cy.get('input[name="nombre"]')
-          .type('Corte');
+    // modal visible
+    cy.get('#addEmployeeModal')
+      .should('be.visible');
 
-        cy.get('input[name="precio"]')
-          .clear()
-          .type('-67000');
+    // llenar formulario
+    cy.get('[data-cy="input-nombre"]').type('Corte');
+    cy.get('[data-cy="input-precio"]').type('-67000');
+    cy.get('[data-cy="input-descripcion"]').type('Test servicio');
 
-        cy.get('textarea[name="descripcion"]')
-          .type('Servicio inválido');
+    // guardar
+    cy.get('[data-cy="btn-guardar-servicio"]').click();
 
-        cy.get('button')
-          .contains('Guardar')
-          .click();
-      });
-
-    // VALIDACIÓN REAL (Django messages)
+    // validación backend (Django message)
     cy.get('.alert', { timeout: 10000 })
-      .should('exist')
-      .and('be.visible')
+      .should('be.visible')
       .and('contain.text', 'precio');
+
   });
 
 });
