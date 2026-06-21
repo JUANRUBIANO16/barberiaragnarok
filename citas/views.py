@@ -59,20 +59,31 @@ from django.http import HttpResponse
 from xhtml2pdf import pisa
 
 
+from datetime import datetime, time, date
+
 def validar_fecha_hora(fecha, hora):
     try:
         f = datetime.strptime(fecha, "%Y-%m-%d").date()
         h = datetime.strptime(hora, "%H:%M").time()
-    except:
+    except ValueError:
         return "Fecha u hora inválida"
 
     hoy = date.today()
 
+    # ❌ no pasado
     if f < hoy:
         return "No puedes agendar en el pasado"
 
+    # ❌ no domingos
     if f.weekday() == 6:
-        return "No domingos"
+        return "No se puede agendar los domingos"
+
+    # 🔥 HORARIO PERMITIDO
+    hora_inicio = time(8, 0)   # 08:00 AM
+    hora_fin = time(12, 0)     # 12:00 PM
+
+    if h < hora_inicio or h > hora_fin:
+        return "Solo puedes agendar entre 8:00 AM y 12:00 PM"
 
     return None
 

@@ -1,16 +1,20 @@
+from datetime import datetime, time
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from barberia.decorators import login_required, role_required
 
+from barberia.decorators import role_required
 from usuarios.models import Usuario
 from .models import Disponibilidad
+
+
+#  RANGO PERMITIDO
+HORA_MIN = time(8, 0)
+HORA_MAX = time(12, 0)
 
 
 # =========================
 # LISTAR DISPONIBILIDAD
 # =========================
-
-
 @role_required('barbero')
 def disponibilidad(request):
     user_id = request.session.get('user_id')
@@ -25,7 +29,6 @@ def disponibilidad(request):
 # =========================
 # CREAR DISPONIBILIDAD
 # =========================
-
 @role_required('barbero')
 def crear_disponibilidad(request):
     if request.method == "POST":
@@ -37,16 +40,26 @@ def crear_disponibilidad(request):
         hora_inicio = request.POST.get("hora_inicio")
         hora_fin = request.POST.get("hora_fin")
 
-        # 🔴 VALIDACIONES
+        # ❌ campos obligatorios
         if not dia or not hora_inicio or not hora_fin:
             messages.error(request, "Todos los campos son obligatorios")
             return redirect('disponibilidad')
 
+        #  convertir a time
+        hora_inicio = datetime.strptime(hora_inicio, "%H:%M").time()
+        hora_fin = datetime.strptime(hora_fin, "%H:%M").time()
+
+        #  validación horario permitido
+        if hora_inicio < HORA_MIN or hora_fin > HORA_MAX:
+            messages.error(request, "Solo puedes definir horarios entre 8:00 AM y 12:00 PM")
+            return redirect('disponibilidad')
+
+        # ❌ orden incorrecto
         if hora_inicio >= hora_fin:
             messages.error(request, "La hora inicio debe ser menor a la hora fin")
             return redirect('disponibilidad')
 
-        # ❌ evitar duplicados exactos
+        # ❌ duplicados
         if Disponibilidad.objects.filter(
             barbero=barbero,
             dia_semana=dia,
@@ -56,7 +69,7 @@ def crear_disponibilidad(request):
             messages.error(request, "Ese horario ya existe")
             return redirect('disponibilidad')
 
-        # ✅ guardar
+        #  crear
         Disponibilidad.objects.create(
             barbero=barbero,
             dia_semana=dia,
@@ -72,12 +85,11 @@ def crear_disponibilidad(request):
 # =========================
 # EDITAR DISPONIBILIDAD
 # =========================
-
 @role_required('barbero')
 def editar_disponibilidad(request, id):
     disp = get_object_or_404(Disponibilidad, id=id)
 
-    # 🔒 seguridad: solo su propio horario
+    # seguridad
     if disp.barbero_id != request.session.get('user_id'):
         messages.error(request, "No puedes editar este horario")
         return redirect('disponibilidad')
@@ -85,15 +97,20 @@ def editar_disponibilidad(request, id):
     if request.method == "POST":
 
         dia = request.POST.get("dia_semana")
-        hora_inicio = request.POST.get("hora_inicio")
-        hora_fin = request.POST.get("hora_fin")
+        hora_inicio = datetime.strptime(request.POST.get("hora_inicio"), "%H:%M").time()
+        hora_fin = datetime.strptime(request.POST.get("hora_fin"), "%H:%M").time()
 
-        # VALIDACIONES
+        #  validación horario permitido
+        if hora_inicio < HORA_MIN or hora_fin > HORA_MAX:
+            messages.error(request, "Solo puedes usar horario entre 8:00 AM y 12:00 PM")
+            return redirect('disponibilidad')
+
+        # ❌ orden incorrecto
         if hora_inicio >= hora_fin:
             messages.error(request, "La hora inicio debe ser menor a la hora fin")
             return redirect('disponibilidad')
 
-        # ❌ evitar duplicados
+        # ❌ duplicados
         if Disponibilidad.objects.filter(
             barbero=disp.barbero,
             dia_semana=dia,
@@ -103,7 +120,7 @@ def editar_disponibilidad(request, id):
             messages.error(request, "Ese horario ya existe")
             return redirect('disponibilidad')
 
-        # ✅ actualizar
+        #  guardar cambios
         disp.dia_semana = dia
         disp.hora_inicio = hora_inicio
         disp.hora_fin = hora_fin
@@ -117,12 +134,11 @@ def editar_disponibilidad(request, id):
 # =========================
 # ELIMINAR DISPONIBILIDAD
 # =========================
-
 @role_required('barbero')
 def eliminar_disponibilidad(request, id):
     disp = get_object_or_404(Disponibilidad, id=id)
 
-    # 🔒 seguridad
+    # seguridad
     if disp.barbero_id != request.session.get('user_id'):
         messages.error(request, "No puedes eliminar este horario")
         return redirect('disponibilidad')
