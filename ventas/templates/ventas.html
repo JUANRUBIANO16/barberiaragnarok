@@ -96,7 +96,13 @@ $(document).ready(function(){
 <div class="table-title">
     <div class="row">
         <div class="col-sm-4">
-            <h2>Ventas <b>Registradas</b></h2>
+            <h2>
+    {% if request.session.user_rol == 'barbero' %}
+        Mis ventas <b>registradas</b>
+    {% else %}
+        Ventas <b>registradas</b>
+    {% endif %}
+</h2>
         </div>
         <div class="col-sm-8">						
             <a href="#addModal" class="btn btn-primary" data-toggle="modal">

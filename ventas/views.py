@@ -1,6 +1,7 @@
 from decimal import Decimal
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+
 from ventas.models import Venta
 from citas.models import Cita
 from barberia.decorators import login_required
@@ -27,20 +28,34 @@ def ventas(request):
     user_id = int(request.session.get('user_id'))
     rol = request.session.get('user_rol')
 
+    # 🔥 ADMIN ve TODO
     if rol == 'admin':
         ventas_qs = Venta.objects.all()
         citas = Cita.objects.all()
-    else:
+        titulo = "Ventas registradas"
+
+    # 🔥 BARBERO SOLO SUS VENTAS
+    elif rol == 'barbero':
         citas_barbero = Cita.objects.filter(barbero_id=user_id)
+
         ventas_qs = Venta.objects.filter(
-            cita_id__in=citas_barbero.values_list('id', flat=True)
+            cita__barbero_id=user_id
         )
+
         citas = citas_barbero
+        titulo = "Mis ventas registradas"
+
+    # 🔥 OTROS (por seguridad)
+    else:
+        ventas_qs = Venta.objects.none()
+        citas = Cita.objects.none()
+        titulo = "Ventas"
 
     return render(request, 'ventas.html', {
         'ventas': ventas_qs,
         'citas': citas,
-        'ventas_totales': ventas_qs.count()
+        'ventas_totales': ventas_qs.count(),
+        'titulo': titulo
     })
 
 
@@ -51,9 +66,7 @@ def crearVenta(request):
             cita_id = request.POST.get('cita')
             cita = get_object_or_404(Cita, id=cita_id)
 
-            # 🔥 subtotal automático
             subtotal = obtener_subtotal(cita)
-
             descuento = calcular_descuento(subtotal)
             total = subtotal - descuento
 
@@ -102,6 +115,6 @@ def venta_edit(request, id):
 def venta_delete(request, id):
     venta = get_object_or_404(Venta, id=id)
     venta.delete()
-    messages.success(request, "Venta eliminada correctamente")
 
+    messages.success(request, "Venta eliminada correctamente")
     return redirect('ventas')
