@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.hashers import check_password, make_password
 from django.conf import settings
-
+import os
 from usuarios.models import Usuario
 import uuid
 
