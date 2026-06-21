@@ -15,6 +15,41 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
+<style>
+.dataTables_filter {
+    display: none;
+}
+
+/* =========================
+   NOTIFICATIONS STYLE
+========================= */
+.notif-row {
+    transition: 0.2s ease;
+}
+
+.notif-row:hover {
+    background: #f8f9fa;
+    transform: scale(1.01);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.notif-pending {
+    border-left: 5px solid #ffc107;
+}
+
+.notif-success {
+    border-left: 5px solid #28a745;
+}
+
+.notif-danger {
+    border-left: 5px solid #dc3545;
+}
+
+.table td {
+    vertical-align: middle;
+}
+</style>
+
 <script>
 $(document).ready(function () {
 
@@ -138,17 +173,24 @@ $(document).ready(function () {
 
 <tbody>
 {% for n in notificaciones %}
-<tr>
-<td>{{ n.id }}</td>
+<tr class="
+    notif-row
+    {% if n.estado == 'pendiente' %}notif-pending
+    {% elif n.estado == 'aceptada' %}notif-success
+    {% else %}notif-danger
+    {% endif %}
+">
+
+<td><strong>#{{ n.id }}</strong></td>
 <td>{{ n.nombre }}</td>
 <td>{{ n.telefono }}</td>
 <td>{{ n.email }}</td>
 
 <td>
 {% if n.servicio %}
-{{ n.servicio.nombre }}
+<span class="badge badge-light">{{ n.servicio.nombre }}</span>
 {% else %}
-Sin servicio
+<span class="text-muted">Sin servicio</span>
 {% endif %}
 </td>
 
@@ -165,20 +207,15 @@ Sin servicio
 <td>
 
 {% if n.estado == "pendiente" %}
-<a href="#aceptarModal{{ n.id }}" data-toggle="modal">
-<i class="material-icons text-success">check_circle</i>
-</a>
+<a href="#aceptarModal{{ n.id }}" data-toggle="modal" class="btn btn-sm btn-success">✔</a>
 
-<a href="{% url 'cancelar_cita' n.id %}">
-<i class="material-icons text-danger">cancel</i>
-</a>
+<a href="{% url 'cancelar_cita' n.id %}" class="btn btn-sm btn-danger">✖</a>
 {% endif %}
 
-<a href="#deleteModal{{ n.id }}" data-toggle="modal">
-<i class="material-icons">&#xE872;</i>
-</a>
+<a href="#deleteModal{{ n.id }}" data-toggle="modal" class="btn btn-sm btn-secondary">🗑</a>
 
 </td>
+
 </tr>
 {% endfor %}
 </tbody>
@@ -226,7 +263,6 @@ Sin servicio
 </select>
 </div>
 
-<!-- 🔥 ESTE ERA EL PROBLEMA -->
 <div class="form-group">
 <label>Servicio</label>
 <select name="servicio" class="form-control" required>
