@@ -43,8 +43,6 @@
     Bienvenido, {{ request.session.user_nombre }}
 </div>
 
-
-
 <!-- ======================= MODULOS COMPARTIDOS ======================= -->
 
 {% if request.session.user_rol != 'cliente' %}
@@ -53,11 +51,11 @@
 
     {% if request.session.user_rol == 'admin' %}
     <a href="{% url 'usuarios' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Total usuarios</p>
-                    <h2 class="text-3xl font-bold text-gray-800 mt-1">{{ total_usuarios }}</h2>
+                    <p class="text-sm font-bold text-gray-500 uppercase">Total usuarios</p>
+                    <h2 class="text-3xl font-bold text-gray-800">{{ total_usuarios }}</h2>
                 </div>
                 <div class="bg-purple-100 p-4 rounded-xl text-purple-600">
                     <i class="mdi mdi-account-group text-3xl"></i>
@@ -68,11 +66,11 @@
     {% endif %}
 
     <a href="{% url 'listar_servicios' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Total servicios</p>
-                    <h2 class="text-3xl font-bold text-gray-800 mt-1">{{ total_servicios }}</h2>
+                    <p class="text-sm font-bold text-gray-500 uppercase">Total servicios</p>
+                    <h2 class="text-3xl font-bold text-gray-800">{{ total_servicios }}</h2>
                 </div>
                 <div class="bg-orange-100 p-4 rounded-xl text-orange-600">
                     <i class="mdi mdi-package-variant-closed text-3xl"></i>
@@ -81,12 +79,19 @@
         </div>
     </a>
 
+    <!-- 🔥 CAMBIO CLAVE DEL MENÚ -->
     <a href="{% url 'comprobantes' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 group-hover:shadow-md group-hover:-translate-y-1">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">Comprobantes</p>
-                    <h2 class="text-3xl font-bold text-gray-800 mt-1">{{ total_comprobantes }}</h2>
+                    <p class="text-sm font-bold text-gray-500 uppercase">
+                        {% if request.session.user_rol == 'barbero' %}
+                            Mis comprobantes
+                        {% else %}
+                            Comprobantes
+                        {% endif %}
+                    </p>
+                    <h2 class="text-3xl font-bold text-gray-800">{{ total_comprobantes }}</h2>
                 </div>
                 <div class="bg-blue-100 p-4 rounded-xl text-blue-600">
                     <i class="mdi mdi-receipt-text text-3xl"></i>
@@ -104,7 +109,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
 
     <a href="{% url 'ventas' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-center">
                 <div>
                     <p class="text-sm font-bold text-gray-500 uppercase">Ventas de hoy</p>
@@ -116,7 +121,7 @@
     </a>
 
     <a href="{% url 'ventas' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-center">
                 <div>
                     <p class="text-sm font-bold text-gray-500 uppercase">Total ventas</p>
@@ -135,7 +140,7 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
     <a href="{% url 'citas' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-center">
                 <div>
                     <p class="text-sm font-bold text-gray-500 uppercase">Mis citas hoy</p>
@@ -147,7 +152,7 @@
     </a>
 
     <a href="{% url 'ventas' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-center">
                 <div>
                     <p class="text-sm font-bold text-gray-500 uppercase">Mis ventas hoy</p>
@@ -159,10 +164,10 @@
     </a>
 
     <a href="{% url 'ventas' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-center">
                 <div>
-                    <p class="text-sm font-bold text-gray-500 uppercase">Total mes</p>
+                    <p class="text-sm font-bold text-gray-500 uppercase">Mis comprobantes</p>
                     <h2 class="text-3xl font-bold text-gray-800">${{ mi_total_mes|floatformat:2 }}</h2>
                 </div>
                 <i class="mdi mdi-chart-line text-4xl text-purple-600"></i>
@@ -178,7 +183,7 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
     <a href="{% url 'agendar_cita' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-center">
                 <div>
                     <p class="text-sm font-bold text-gray-500 uppercase">Agendar cita</p>
@@ -190,7 +195,7 @@
     </a>
 
     <a href="{% url 'mis_citas' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-center">
                 <div>
                     <p class="text-sm font-bold text-gray-500 uppercase">Mis citas</p>
@@ -202,7 +207,7 @@
     </a>
 
     <a href="{% url 'historial_citas' %}" class="group h-full">
-        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group-hover:shadow-md group-hover:-translate-y-1 transition-all">
+        <div class="h-full bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-center">
                 <div>
                     <p class="text-sm font-bold text-gray-500 uppercase">Historial</p>
@@ -216,9 +221,9 @@
 </div>
 {% endif %}
 
+<!-- ===================== GRAFICAS ===================== -->
 {% if request.session.user_rol != 'cliente' %}
 
-<!-- ===================== GRAFICAS ===================== -->
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <canvas id="myChart"></canvas>
