@@ -48,7 +48,7 @@ body {
 	margin-top: 2px;
 }
 .table-title {
-	color: #c2b00c;
+	color: #d4af37;
 	background: #1c1d1d;	
 	padding: 16px 25px;
 	margin: -20px -25px 10px;
@@ -57,7 +57,7 @@ body {
 .table-title h2 {
 	margin: 5px 0 0;
 	font-size: 24px;
-	color: #c2b00c;
+	color: #d4af37;
 }
 .show-entries select.form-control {        
 	width: 60px;
