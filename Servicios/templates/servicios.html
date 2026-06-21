@@ -9,14 +9,11 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="{% static 'css/table.css' %}">
 
-<!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-
-<!-- DataTables JS -->
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <script>
@@ -30,34 +27,20 @@ $(document).ready(function () {
         pageLength: 5,
         columnDefs: [
             { orderable: false, targets: 5 }
-        ],
-        language: {
-            info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-            paginate: {
-                first: "Primero",
-                last: "Último",
-                next: "Siguiente",
-                previous: "Anterior"
-            },
-            zeroRecords: "No se encontraron registros"
-        }
+        ]
     });
 
-    // filtro por nombre
     $('#filter-nombre').on('keyup', function () {
         table.column(1).search(this.value).draw();
     });
 
-    // filtro por cantidad de registros
     $('#custom-length').on('change', function () {
         table.page.len(this.value).draw();
     });
 
-    // filtro por precio máximo
-    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+    $.fn.dataTable.ext.search.push(function(settings, data) {
         let max = parseFloat($('#filter-precio').val()) || Infinity;
         let precio = parseFloat(data[3]) || 0;
-
         return precio <= max;
     });
 
@@ -67,243 +50,234 @@ $(document).ready(function () {
 });
 </script>
 
-<div class="container-xl"> <!--  MENSAJES CRUD -->
-    {% if messages %}
-    <div class="mt-3">
-        {% for message in messages %}
-            <div class="alert 
-                {% if message.tags == 'error' %}alert-danger
-                {% elif message.tags == 'success' %}alert-success
-                {% elif message.tags == 'warning' %}alert-warning
-                {% else %}alert-info
-                {% endif %}
-                alert-dismissible fade show" role="alert">
+<div class="container-xl">
 
-                {{ message }}
+<!-- MENSAJES -->
+{% if messages %}
+<div class="mt-3">
+    {% for message in messages %}
+        <div class="alert 
+            {% if message.tags == 'error' %}alert-danger
+            {% elif message.tags == 'success' %}alert-success
+            {% elif message.tags == 'warning' %}alert-warning
+            {% else %}alert-info
+            {% endif %}
+            alert-dismissible fade show">
 
-                <button type="button" class="close" data-dismiss="alert">
-                    <span>&times;</span>
-                </button>
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
+            {{ message }}
 
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
 
-    <div class="table-responsive">
-        <div class="table-wrapper">
+<div class="table-responsive">
+<div class="table-wrapper">
 
-            <div class="table-title">
-                <div class="row">
-                    
-                    <div class="col-sm-4">
-                        <h2>Servicios <b>Registrados</b></h2>
-                    </div>
-                    <div class="col-sm-8">						
-                        <a href="#addEmployeeModal" class="btn btn-primary" data-toggle="modal"><i class="material-icons">&#xE863;</i> <span>Agregar Servicios</span></a>
-                       
-                    </div>
-                </div>
-            </div>
-<div class="table-filter mb-2">
+<!-- TITULO + BOTON SOLO ADMIN -->
+<div class="table-title">
     <div class="row">
-        <div class="col-sm-3">
-            <div class="show-entries">
-                <span>Mostrar</span>
-                <select id="custom-length" class="form-control">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
-                </select>
-                <span>entradas</span>
-            </div>
+        <div class="col-sm-4">
+            <h2>Servicios <b>Registrados</b></h2>
         </div>
 
-        <div class="col-sm-9 d-flex align-items-center">
-            <div class="filter-group mr-2">
-                <label>Nombre</label>
-                <input type="text" id="filter-nombre" class="form-control" placeholder="Buscar Servicio">
-            </div>
+        <div class="col-sm-8">
 
-            <div class="filter-group">
-                <label>Precio máximo</label>
-                <input type="number" id="filter-precio" class="form-control" placeholder="Ej: 50000">
-            </div>
+            {% if user.role == 'admin' %}
+            <a href="#addEmployeeModal" class="btn btn-primary" data-toggle="modal">
+                <i class="material-icons">&#xE863;</i> <span>Agregar Servicios</span>
+            </a>
+            {% endif %}
+
         </div>
     </div>
 </div>
-                        
 
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Nombre</th>
-                        <th>Descripcion</th>
-                        <th>Precio</th>
-                        <th>Imagen</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
+<!-- FILTROS -->
+<div class="table-filter mb-2">
+<div class="row">
 
-                <tbody>
-                    {% for s in servicios %}
-                    <tr>
-                        <td>{{ s.id }}</td>
-                        <td>{{ s.nombre }}</td>
-                        <td>{{ s.descripcion }}</td>
-                        <td>{{ s.precio }}</td>
-                        <td>
-    {% if s.imagen %}
-        <img src="{{ s.imagen.url }}" 
-             alt="{{ s.nombre }}"
-             style="width:70px; height:70px; object-fit:cover; border-radius:8px;">
-    {% else %}
-        Sin imagen
+<div class="col-sm-3">
+    <div class="show-entries">
+        <span>Mostrar</span>
+        <select id="custom-length" class="form-control">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+        </select>
+        <span>entradas</span>
+    </div>
+</div>
+
+<div class="col-sm-9 d-flex align-items-center">
+
+    <div class="filter-group mr-2">
+        <label>Nombre</label>
+        <input type="text" id="filter-nombre" class="form-control">
+    </div>
+
+    <div class="filter-group">
+        <label>Precio máximo</label>
+        <input type="number" id="filter-precio" class="form-control">
+    </div>
+
+</div>
+</div>
+</div>
+
+<!-- TABLA -->
+<table class="table table-striped table-hover">
+<thead>
+<tr>
+    <th>Id</th>
+    <th>Nombre</th>
+    <th>Descripcion</th>
+    <th>Precio</th>
+    <th>Imagen</th>
+
+    {% if user.role == 'admin' %}
+    <th>Acciones</th>
     {% endif %}
-</td>
-                        <td>
-                            <a href="#editEmployeeModal{{ s.id }}" data-toggle="modal">
-                                <i class="material-icons">&#xE254;</i>
-                            </a>
-                            <a href="#deleteEmployeeModal{{ s.id }}" data-toggle="modal">
-                                <i class="material-icons">&#xE872;</i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+</tr>
+</thead>
 
-        </div>
-    </div>
+<tbody>
+{% for s in servicios %}
+<tr>
+    <td>{{ s.id }}</td>
+    <td>{{ s.nombre }}</td>
+    <td>{{ s.descripcion }}</td>
+    <td>{{ s.precio }}</td>
+
+    <td>
+        {% if s.imagen %}
+            <img src="{{ s.imagen.url }}" style="width:70px;height:70px;object-fit:cover;">
+        {% else %}
+            Sin imagen
+        {% endif %}
+    </td>
+
+    {% if user.role == 'admin' %}
+    <td>
+        <a href="#editEmployeeModal{{ s.id }}" data-toggle="modal">
+            <i class="material-icons">&#xE254;</i>
+        </a>
+
+        <a href="#deleteEmployeeModal{{ s.id }}" data-toggle="modal">
+            <i class="material-icons">&#xE872;</i>
+        </a>
+    </td>
+    {% endif %}
+
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
 
-<!-- ADD MODAL -->
+<!-- ================= ADD MODAL ================= -->
+{% if user.role == 'admin' %}
 <div id="addEmployeeModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
+<div class="modal-dialog">
+<div class="modal-content">
 
-            <form method="POST" action="{% url 'crear_servicios' %}" enctype="multipart/form-data">
-                {% csrf_token %}
+<form method="POST" action="{% url 'crear_servicios' %}" enctype="multipart/form-data">
+{% csrf_token %}
 
-                <div class="modal-header">
-                    <h4 class="modal-title">Añadir Servicio</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="form-group">
-                        <label>Nombre</label>
-                        <input type="text" name="nombre" class="form-control" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Precio</label>
-                        <input type="number" name="precio" class="form-control" step="0.01" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Descripcion</label>
-                        <textarea name="descripcion" class="form-control" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Imagen</label>
-                        <input type="file" name="imagen" class="form-control">
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success">Guardar</button>
-                </div>
-
-            </form>
-
-        </div>
-    </div>
+<div class="modal-header">
+    <h4 class="modal-title">Añadir Servicio</h4>
 </div>
 
-<!-- EDIT MODALS -->
+<div class="modal-body">
+
+<input type="text" name="nombre" class="form-control" placeholder="Nombre" required>
+<input type="number" name="precio" class="form-control mt-2" placeholder="Precio" required>
+<textarea name="descripcion" class="form-control mt-2"></textarea>
+<input type="file" name="imagen" class="form-control mt-2">
+
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-success">Guardar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
+{% endif %}
+
+<!-- EDIT MODALS SOLO ADMIN -->
+{% if user.role == 'admin' %}
 {% for s in servicios %}
 <div id="editEmployeeModal{{ s.id }}" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
+<div class="modal-dialog">
+<div class="modal-content">
 
-            <form method="POST" action="{% url 'editar_servicios' s.id %}" enctype="multipart/form-data">
-                {% csrf_token %}
+<form method="POST" action="{% url 'editar_servicios' s.id %}" enctype="multipart/form-data">
+{% csrf_token %}
 
-                <div class="modal-header">
-                    <h4 class="modal-title">Editar Servicio</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="form-group">
-                        <label>Nombre</label>
-                        <input type="text" name="nombre" class="form-control" value="{{ s.nombre }}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Descripcion</label>
-                        <textarea name="descripcion" class="form-control" required>{{ s.descripcion }}</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Precio</label>
-                        <input type="number" name="precio" class="form-control" step="0.01" value="{{ s.precio }}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Imagen</label>
-                        <input type="file" name="imagen" class="form-control">
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-info">Guardar</button>
-                </div>
-
-            </form>
-
-        </div>
-    </div>
+<div class="modal-header">
+    <h4 class="modal-title">Editar Servicio</h4>
 </div>
 
+<div class="modal-body">
 
+<input type="text" name="nombre" value="{{ s.nombre }}" class="form-control">
+<textarea name="descripcion" class="form-control">{{ s.descripcion }}</textarea>
+<input type="number" name="precio" value="{{ s.precio }}" class="form-control">
+<input type="file" name="imagen" class="form-control">
+
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-info">Guardar</button>
+</div>
+
+</form>
+
+</div>
+</div>
+</div>
 {% endfor %}
+{% endif %}
 
-
+<!-- DELETE MODALS SOLO ADMIN -->
+{% if user.role == 'admin' %}
 {% for s in servicios %}
 <div id="deleteEmployeeModal{{ s.id }}" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST" action="{% url 'eliminar_servicios' s.id %}">
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h4 class="modal-title">Eliminar Servicio</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Estás seguro de que quieres eliminar este servicio?</p>
-                    <p class="text-warning"><small>Esta acción no se puede deshacer.</small></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </div>
-            </form>
-        </div>
-    </div>
+<div class="modal-dialog">
+<div class="modal-content">
+
+<form method="POST" action="{% url 'eliminar_servicios' s.id %}">
+{% csrf_token %}
+
+<div class="modal-header">
+    <h4>Eliminar Servicio</h4>
+</div>
+
+<div class="modal-body">
+    <p>¿Seguro?</p>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-danger">Eliminar</button>
+</div>
+
+</form>
+
+</div>
+</div>
 </div>
 {% endfor %}
-
+{% endif %}
 
 {% endblock %}
