@@ -34,8 +34,6 @@ def validar_precio(valor):
 def lista_servicios(request):
     servicios = Servicio.objects.all()
     return render(request, 'servicios.html', {'servicios': servicios})
-
-
 # =========================
 # CREAR SERVICIO (SOLO ADMIN)
 # =========================
