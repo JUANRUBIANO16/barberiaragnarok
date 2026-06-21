@@ -1,5 +1,8 @@
+
 {% load static %}
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+
+<style>
 
 <style>
 
@@ -220,19 +223,20 @@
 
 </style>
 
+</style>
+
 <!-- Logo -->
 <div class="app-brand">
     <div class="brand-container">
-        <i class=></i>
+        <i class=""></i>
 
         <div>
             <div class="app-brand-text">RAGNAROK</div>
-            <div class="app-brand-subtitle">
-                BARBER SHOP
-            </div>
+            <div class="app-brand-subtitle">BARBER SHOP</div>
         </div>
     </div>
 </div>
+
 <!-- Perfil -->
 <div class="profile-box">
     {% if usuario.foto %}
@@ -240,6 +244,7 @@
     {% else %}
         <img src="{% static 'img/default-avatar.png' %}" alt="Foto por defecto">
     {% endif %}
+
     <div class="profile-info">
         <strong>{{ usuario.nombre }} {{ usuario.apellido }}</strong>
         <span>{{ usuario.tipo_usuario|capfirst }}</span>
@@ -248,7 +253,7 @@
 
 <ul class="menu-inner py-2">
 
-<!-- Perfil -->
+<!-- PERFIL -->
 <li class="menu-item">
     <a href="{% url 'perfil' %}" class="menu-link">
         <i class="menu-icon bx bx-user-circle"></i>
@@ -256,7 +261,7 @@
     </a>
 </li>
 
-<!-- Dashboard -->
+<!-- DASHBOARD -->
 <li class="menu-item">
     <a href="{% url 'dashboard' %}" class="menu-link">
         <i class="menu-icon bx bx-grid-alt"></i>
@@ -264,8 +269,8 @@
     </a>
 </li>
 
+<!-- ADMIN -->
 {% if request.session.user_rol == 'admin' %}
-<!-- Usuarios -->
 <li class="menu-item">
     <a href="{% url 'usuarios' %}" class="menu-link">
         <i class="menu-icon bx bx-group"></i>
@@ -274,8 +279,8 @@
 </li>
 {% endif %}
 
+<!-- CITAS (todos menos cliente) -->
 {% if request.session.user_rol != 'cliente' %}
-<!-- Citas -->
 <li class="menu-item">
     <a href="{% url 'citas' %}" class="menu-link">
         <i class="menu-icon bx bx-calendar-check"></i>
@@ -284,8 +289,8 @@
 </li>
 {% endif %}
 
+<!-- BARBERO: disponibilidad -->
 {% if request.session.user_rol == 'barbero' %}
-<!-- Disponibilidad -->
 <li class="menu-item">
     <a href="{% url 'disponibilidad' %}" class="menu-link">
         <i class="menu-icon bx bx-time"></i>
@@ -294,9 +299,8 @@
 </li>
 {% endif %}
 
-
+<!-- SERVICIOS -->
 {% if request.session.user_rol != 'cliente' %}
-<!-- Servicios -->
 <li class="menu-item">
     <a href="{% url 'listar_servicios' %}" class="menu-link">
         <i class="menu-icon bx bx-briefcase-alt"></i>
@@ -305,9 +309,8 @@
 </li>
 {% endif %}
 
+<!-- CLIENTE -->
 {% if request.session.user_rol == 'cliente' %}
-
-<!-- Agendar Cita -->
 <li class="menu-item">
     <a href="{% url 'agendar_cita' %}" class="menu-link">
         <i class="menu-icon bx bx-calendar-plus"></i>
@@ -315,7 +318,6 @@
     </a>
 </li>
 
-<!-- Mis Citas -->
 <li class="menu-item">
     <a href="{% url 'mis_citas' %}" class="menu-link">
         <i class="menu-icon bx bx-calendar-check"></i>
@@ -323,48 +325,57 @@
     </a>
 </li>
 
-<!-- Historial -->
 <li class="menu-item">
     <a href="{% url 'historial_citas' %}" class="menu-link">
         <i class="menu-icon bx bx-history"></i>
         <div>Historial de Citas</div>
     </a>
 </li>
-
 {% endif %}
 
+<!-- 🔥 VENTAS / COMPROBANTES DINÁMICO -->
 {% if request.session.user_rol != 'cliente' %}
 
-<!-- Ventas -->
 <li class="menu-item">
     <a href="{% url 'ventas' %}" class="menu-link">
         <i class="menu-icon bx bx-line-chart"></i>
-        <div>Ventas</div>
+        <div>
+            {% if request.session.user_rol == 'barbero' %}
+                Mis ventas
+            {% else %}
+                Ventas
+            {% endif %}
+        </div>
     </a>
 </li>
 
-<!-- Comprobantes -->
 <li class="menu-item">
     <a href="{% url 'comprobantes' %}" class="menu-link">
         <i class="menu-icon bx bx-file"></i>
-        <div>Comprobantes</div>
+        <div>
+            {% if request.session.user_rol == 'barbero' %}
+                Mis comprobantes
+            {% else %}
+                Comprobantes
+            {% endif %}
+        </div>
     </a>
 </li>
 
-<!-- Tipo de Pago -->
+<!-- Tipo de pago solo admin -->
+{% if request.session.user_rol == 'admin' %}
 <li class="menu-item">
     <a href="{% url 'tipoPago' %}" class="menu-link">
         <i class="menu-icon bx bx-credit-card"></i>
         <div>Tipo de Pago</div>
     </a>
 </li>
+{% endif %}
 
 {% endif %}
 
-
-
+<!-- NOTIFICACIONES -->
 {% if request.session.user_rol == 'admin' %}
-<!-- Notificaciones -->
 <li class="menu-item">
     <a href="{% url 'notificaciones' %}" class="menu-link">
         <i class="menu-icon bx bx-bell"></i>
@@ -373,13 +384,14 @@
 </li>
 {% endif %}
 
-<!-- Salir -->
+<!-- SALIR -->
 <li class="menu-item">
     <a href="{% url 'logout' %}" class="menu-link logout">
         <i class="menu-icon bx bx-log-out-circle"></i>
         <div>Salir</div>
     </a>
 </li>
+
 </ul>
 
 </aside>
