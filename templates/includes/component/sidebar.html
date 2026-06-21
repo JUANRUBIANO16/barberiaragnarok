@@ -284,7 +284,13 @@
 <li class="menu-item">
     <a href="{% url 'citas' %}" class="menu-link">
         <i class="menu-icon bx bx-calendar-check"></i>
-        <div>Citas</div>
+        <div>
+            {% if request.session.user_rol == 'barbero' %}
+                Mis citas
+            {% else %}
+                Citas
+            {% endif %}
+        </div>
     </a>
 </li>
 {% endif %}

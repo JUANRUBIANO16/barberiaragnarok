@@ -103,8 +103,14 @@ $(document).ready(function () {
                 <div class="row">
                     
                     <div class="col-sm-4">
-                        <h2>Comprobantes <b>Registradas</b></h2>
-                    </div>
+    <h2>
+        {% if request.session.user_rol == "barbero" %}
+            Mis comprobantes
+        {% else %}
+            Comprobantes <b>registrados</b>
+        {% endif %}
+    </h2>
+</div>
                     <div class="col-sm-8">						
                         <a href="#addModal" class="btn btn-primary" data-toggle="modal">
     <i class="material-icons">&#xE863;</i> <span>Agregar Comprobante</span>
