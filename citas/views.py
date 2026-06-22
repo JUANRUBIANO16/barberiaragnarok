@@ -78,7 +78,6 @@ def validar_fecha_hora(fecha, hora):
     if f.weekday() == 6:
         return "No se puede agendar los domingos"
 
-    # 🔥 HORARIO PERMITIDO
     hora_inicio = time(8, 0)   # 08:00 AM
     hora_fin = time(12, 0)     # 12:00 PM
 

@@ -168,7 +168,7 @@ Te esperamos 💈
             n.estado = 'aceptada'
             n.save()
 
-            messages.success(request, "Cita creada correctamente")
+            messages.success(request, "Cita creada correctamente y sms enviado")
 
     except SolicitudCita.DoesNotExist:
         messages.error(request, "Solicitud no existe")
